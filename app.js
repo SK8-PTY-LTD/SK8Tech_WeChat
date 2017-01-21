@@ -25,11 +25,15 @@ require('./cloud');
 app.use(AV.express());
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 
 app.get('/', function(req, res) {
-  res.render('index', { currentTime: new Date() });
+  res.render('index', {
+    currentTime: new Date()
+  });
 });
 
 // 可以将一类的路由单独保存在一个文件中
@@ -54,10 +58,10 @@ app.use(function(err, req, res, next) { // jshint ignore:line
   }
 
   var statusCode = err.status || 500;
-  if(statusCode === 500) {
+  if (statusCode === 500) {
     console.error(err.stack || err);
   }
-  if(req.timedout) {
+  if (req.timedout) {
     console.error('请求超时: url=%s, timeout=%d, 请确认方法执行耗时很长，或没有正确的 response 回调。', req.originalUrl, err.timeout);
   }
   res.status(statusCode);
