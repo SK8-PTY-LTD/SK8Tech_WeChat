@@ -2,18 +2,16 @@ var router = require('express').Router();
 // 引用 wechat 库，详细请查看 https://github.com/node-webot/wechat
 var wechat = require('wechat');
 var config = {
-  token: '6Pii480a1iuf268XxNu3p1GgDJ8Q3y63',
-  appid: 'wx9c5bc96fa04c697f',
-  encodingAESKey: 'bDJ2I3ELs5QFG5oOy5cSHJThzreVrFeVZeY8pkTUbUx'
+  token: process.env.token,
+  appid: process.env.appid,
+  encodingAESKey: process.env.encodingAESKey
 };
 
 var WechatAPI = require('wechat-api');
-var api = new WechatAPI('wx9c5bc96fa04c697f',
-  '8d19ae8982879f5c23a673af9d12fef9');
+var api = new WechatAPI(process.env.appid,
+  process.env.appsecret);
 
 router.use('/', wechat(config).text(function(message, req, res, next) {
-  
-  console.log("Called 0");
   
   // message为文本内容
   // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -27,17 +25,15 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   switch (keyIndex) {
     case 0:
       {
-        console.log("Called 1");
         res.reply({
           type: "text",
-          content: '您好，大家好才是真的好！'
+          content: '你好，大家好才是真的好！'
         });
 
       }
       break;
     case 1:
       {
-        console.log("Called 2");
         res.reply({
           type: "text",
           content: '不约，不约，叔叔我们不约！'
