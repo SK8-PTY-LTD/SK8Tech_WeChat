@@ -77,4 +77,8 @@ app.use(function(err, req, res, next) { // jshint ignore:line
   });
 });
 
+// 这一段必须拷贝到当前项目中，它是定义了一个路由集合
+// 可以将一类的路由单独保存在一个文件中
+app.use('/wechat', require('./routes/wechatBot'));
+
 module.exports = app;
