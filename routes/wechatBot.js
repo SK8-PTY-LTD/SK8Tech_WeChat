@@ -12,6 +12,9 @@ var api = new WechatAPI('wx9c5bc96fa04c697f',
   '8d19ae8982879f5c23a673af9d12fef9');
 
 router.use('/', wechat(config.token).text(function(message, req, res, next) {
+  
+  console.log("Called 0");
+  
   // message为文本内容
   // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
   // CreateTime: '1359125035',
@@ -22,6 +25,7 @@ router.use('/', wechat(config.token).text(function(message, req, res, next) {
   var content = message.Content;
   var keyIndex = keyArray.indexOf(content);
   switch (keyIndex) {
+  console.log("Called 1");
     case 0:
       {
         res.reply({
