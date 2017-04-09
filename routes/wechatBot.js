@@ -11,7 +11,7 @@ var WechatAPI = require('wechat-api');
 var api = new WechatAPI('wx9c5bc96fa04c697f',
   '8d19ae8982879f5c23a673af9d12fef9');
 
-router.use('/', wechat(config.token).text(function(message, req, res, next) {
+router.use('/', wechat(config).text(function(message, req, res, next) {
   
   console.log("Called 0");
   
