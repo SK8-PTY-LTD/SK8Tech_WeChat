@@ -25,9 +25,9 @@ router.use('/', wechat(config.token).text(function(message, req, res, next) {
   var content = message.Content;
   var keyIndex = keyArray.indexOf(content);
   switch (keyIndex) {
-  console.log("Called 1");
     case 0:
       {
+        console.log("Called 1");
         res.reply({
           type: "text",
           content: '您好，大家好才是真的好！'
@@ -37,6 +37,7 @@ router.use('/', wechat(config.token).text(function(message, req, res, next) {
       break;
     case 1:
       {
+        console.log("Called 2");
         res.reply({
           type: "text",
           content: '不约，不约，叔叔我们不约！'
