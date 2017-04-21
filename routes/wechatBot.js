@@ -7,7 +7,6 @@ var config = {
   encodingAESKey: process.env.encodingAESKey
 };
 
-
 var WechatAPI = require('wechat-api');
 var api = new WechatAPI(process.env.appid,
   process.env.appsecret);
