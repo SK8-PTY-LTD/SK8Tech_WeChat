@@ -13,6 +13,8 @@ var api = new WechatAPI(process.env.appid,
 
 router.use('/', wechat(config).text(function(message, req, res, next) {
   
+  console.log("WeChat Called");
+  
   // message为文本内容
   // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
   // CreateTime: '1359125035',
