@@ -16,7 +16,7 @@ console.log(api);
 router.use('/', wechat(config, function (req, res, next) {
   // 微信输入信息都在req.weixin上
   console.log(req.query.openid);
-  console.log(req.res._events);
+  console.log(req.res._events)
 }));
 
 
