@@ -19,6 +19,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   // MsgType: 'text',
   // Content: 'http',
   // MsgId: '5837397576500011341' }
+  console.log(req);
   var keyArray = ['你好', '约吗'];
   var content = message.Content;
   var keyIndex = keyArray.indexOf(content);
