@@ -13,6 +13,10 @@ var api = new WechatAPI(process.env.appid,
 
 console.log(api);
 
+router.use('/', wechat(config,function(req, res, next) {
+  console.log(req)
+}
+
 router.use('/', wechat(config).text(function(message, req, res, next) {
   
   console.log("WeChat Called");
@@ -23,7 +27,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   // MsgType: 'text',
   // Content: 'http',
   // MsgId: '5837397576500011341' }
-  
+
   var keyArray = ['你好', '约吗'];
   var content = message.Content;
   var keyIndex = keyArray.indexOf(content);
