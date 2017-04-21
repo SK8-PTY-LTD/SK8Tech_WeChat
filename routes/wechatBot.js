@@ -13,9 +13,11 @@ var api = new WechatAPI(process.env.appid,
 
 console.log(api);
 
-router.use('/', wechat(config,function(req, res, next) {
-  console.log(req)
-}
+router.use('/', wechat(config, function (req, res, next) {
+  // 微信输入信息都在req.weixin上
+  console.log(req);
+}));
+
 
 router.use('/', wechat(config).text(function(message, req, res, next) {
   
