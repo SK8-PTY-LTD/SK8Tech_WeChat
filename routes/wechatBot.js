@@ -68,6 +68,9 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   var slackWebhookMarketing = "https://hooks.slack.com/services/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";
   request.post({
     url:slackWebhookMarketing, 
+    headers: {
+      "Content-Type":"application/json"
+    },
     body: {
       'text':message.Content
     }
