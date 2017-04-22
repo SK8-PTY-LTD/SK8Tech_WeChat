@@ -11,7 +11,7 @@ var WechatAPI = require('wechat-api');
 var api = new WechatAPI(process.env.appid,
   process.env.appsecret);
 
-console.log(api);
+var request = require('request');
 
 // router.use('/', wechat(config, function (req, res, next) {
 //   // 微信输入信息都在req.weixin上
@@ -22,7 +22,7 @@ console.log(api);
 
 router.use('/', wechat(config).text(function(message, req, res, next) {
   
-  console.log("WeChat Called");
+  console.log("收到文字消息: " ＋ message.Content);
   
   // message为文本内容
   // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -60,6 +60,24 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
       });
       break;
   }
+  
+  // Send text information to Slack
+  // @author Jack
+  // @see https://www.npmjs.com/package/request
+  // @see https://api.slack.com/incoming-webhooks#sending_messages
+  var slackWebhookMarketing = "https://hooks.slack.com/services/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";
+  request.post({
+    url:slackWebhookMarketing, 
+    body: {
+      'text':message.Content
+    }
+  }, function(err,httpResponse,body){ /* ... */ 
+    console.log('Slack error:', error); // Print the error if one occurred 
+    console.log('Slack statusCode:', response && response.statusCode); // Print the response status code if a response was received 
+    console.log('Slack body:', body); // Print the HTML for the Google homepage. 
+  });
+  
+  
 }).image(function(message, req, res, next) {
   // message为图片内容
   // { ToUserName: 'gh_d3e07d51b513',
