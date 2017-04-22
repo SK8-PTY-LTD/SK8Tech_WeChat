@@ -22,7 +22,7 @@ var request = require('request');
 
 router.use('/', wechat(config).text(function(message, req, res, next) {
   
-  console.log("收到文字消息: " ＋ message.Content);
+  console.log("收到文字消息, " ＋ message.Content);
   
   // message为文本内容
   // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
