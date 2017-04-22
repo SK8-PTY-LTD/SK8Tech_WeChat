@@ -72,8 +72,8 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
       'text':message.Content
     }
   }, function(err,httpResponse,body){ /* ... */ 
-    console.log('Slack error:', error); // Print the error if one occurred 
-    console.log('Slack statusCode:', response && response.statusCode); // Print the response status code if a response was received 
+    console.log('Slack error:', err); // Print the error if one occurred 
+    console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received 
     console.log('Slack body:', body); // Print the HTML for the Google homepage. 
   });
   
