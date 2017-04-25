@@ -126,11 +126,27 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                     "Content-Type": "application/json"
                   },
                   body: {
-                    "text": nickname + " [" + sex + ", " + province + "]：" + message.Content,
+                    "text": "新消息：",
                     "attachments": [{
-                      "text": "头像照片: " + profileImageURL
-                    }, {
-                      "text": "点击回复: mp.weixin.qq.com"
+                      "title": nickname,
+                      "title_link": "https://mp.weixin.qq.com/",
+                      "text": message.Content,
+                      "thumbnail_url": "profileImageURL",
+                      "fields": [{
+                        "title": "Gender",
+                        "value": sex,
+                        "short": true
+                      }, {
+                        "title": "Location",
+                        "value": province,
+                        "short": true
+                      }],
+                      "actions": [{
+                        "name": "reply",
+                        "text": "回复(待开发)",
+                        "type": "button",
+                        "value": "reply"
+                      }]
                     }]
                   }
                 },
