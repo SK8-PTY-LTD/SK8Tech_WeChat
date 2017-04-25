@@ -77,6 +77,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
       } else {
         console.log('公众号 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received         
+        console.log('公众号 body:', body)
 
         var nickname = body.nickname;
         var sex = body.sex;
