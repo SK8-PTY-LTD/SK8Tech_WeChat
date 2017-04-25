@@ -75,9 +75,9 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
         console.log('公众号授权 error:', err); // Print the error if one occurred 
       } else {
         // console.log('公众号授权 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received         
-        console.log('公众号授权 body:', body)
+        console.log('公众号授权 body:', httpResponse);
 
-        var newToken = body.access_token;
+        var newToken = httpResponse.access_token;
 
         // 获取微信用户吗
         // @author Jack
