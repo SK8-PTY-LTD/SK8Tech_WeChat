@@ -63,6 +63,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   // @author Jack
   // @see https://mp.weixin.qq.com/wiki/11/0e4b294685f817b95cbed85ba5e82b8f.html
   var requestURL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&" + process.env.appid + "&openid=" + process.env.appsecret;
+  console.log("requestURL", requestURL);
   request.get({
       url: requestURL,
       json: true,
@@ -75,16 +76,17 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
         console.log('公众号授权 error:', err); // Print the error if one occurred 
       } else {
         // console.log('公众号授权 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received         
-        console.log('公众号授权 body:', httpResponse);
+        console.log('公众号授权 body:', body);
 
-        var newToken = httpResponse.access_token;
+        var newToken = body.access_token;
 
         // 获取微信用户吗
         // @author Jack
         // @see https://mp.weixin.qq.com/wiki/14/bb5031008f1494a59c6f71fa0f319c66.html
-        var requestURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + newToken + "&openid=" + message.FromUserName;
+        var userRequestURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + newToken + "&openid=" + message.FromUserName;
+        console.log("userRequestURL", userRequestURL);
         request.get({
-            url: requestURL,
+            url: userRequestURL,
             json: true,
             headers: {
               "Content-Type": "application/json"
