@@ -49,13 +49,12 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
           type: "text",
           content: '不约，不约，叔叔我们不约！'
         });
-
       }
       break;
     default:
       res.reply({
         type: "text",
-        content: '服务器挂掉了，你的要求暂时无法满足……'
+        content: '呀～公众号悄悄开发中～小编稍后联系你哦～'
       });
       break;
   }
@@ -72,16 +71,16 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
         "Content-Type": "application/json"
       },
       body: {
-        'text': message.Content
+        'text': message.FromUserName + ": " + message.Content
       }
     },
     function(err, httpResponse, body) { /* ... */
       if (err != null) {
         console.log('Slack error:', err); // Print the error if one occurred 
-        response.error(httpResponse);
+
       } else {
-        console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received 
-        console.log('Slack body:', body); // Print the HTML for the Google homepage. 
+        console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received         
+
       }
     });
 
