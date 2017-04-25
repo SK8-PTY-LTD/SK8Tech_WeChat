@@ -59,11 +59,10 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
       break;
   }
 
-  // 获取微信用户吗
+  // 获取公众号access_token
   // @author Jack
-  // @see https://mp.weixin.qq.com/wiki/14/bb5031008f1494a59c6f71fa0f319c66.html
-  var requestURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + process.env.token + "&openid=" + message.FromUserName;
-
+  // @see https://mp.weixin.qq.com/wiki/11/0e4b294685f817b95cbed85ba5e82b8f.html
+  var requestURL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&" + process.env.appid + "&openid=" + process.env.appsecret;
   request.get({
       url: requestURL,
       json: true,
@@ -71,59 +70,80 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
         "Content-Type": "application/json"
       }
     },
-    function(err, httpResponse, body) { /* ... */
+    function(err, httpResponse, body) {
       if (err != null) {
-        console.log('公众号 error:', err); // Print the error if one occurred 
-
+        console.log('公众号授权 error:', err); // Print the error if one occurred 
       } else {
-        console.log('公众号 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received         
-        console.log('公众号 body:', body)
+        // console.log('公众号授权 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received         
+        console.log('公众号授权 body:', body)
 
-        var nickname = body.nickname;
-        var sex = body.sex;
-        if (sex == 0) {
-          sex = "未"
-        } else if (sex == 1) {
-          sex = "男"
-        } else if (sex == 2) {
-          sex = "女"
-        }
-        var language = body.language;
-        var city = body.city;
-        var province = body.province;
-        var country = body.country;
-        var profileImageURL = body.headimageurl;
+        var newToken = body.access_token;
 
-        // Send text information to Slack
+        // 获取微信用户吗
         // @author Jack
-        // @see https://www.npmjs.com/package/request
-        // @see https://api.slack.com/incoming-webhooks#sending_messages
-        var slackWebhookMarketing = "https://hooks.slack.com/services/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";
-        request.post({
-            url: slackWebhookMarketing,
+        // @see https://mp.weixin.qq.com/wiki/14/bb5031008f1494a59c6f71fa0f319c66.html
+        var requestURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + newToken + "&openid=" + message.FromUserName;
+        request.get({
+            url: requestURL,
             json: true,
             headers: {
               "Content-Type": "application/json"
-            },
-            body: {
-              "text": nickname + "," + sex + "," + city + "：" + message.Content,
-              "attachments": [{
-                "text": "头像照片: " + profileImageURL
-              }, {
-                "text": "点击回复: mp.weixin.qq.com"
-              }]
             }
           },
-          function(err, httpResponse, body) { /* ... */
+          function(err, httpResponse, body) {
             if (err != null) {
-              console.log('Slack error:', err); // Print the error if one occurred 
-
+              console.log('用户数据 error:', err); // Print the error if one occurred 
             } else {
-              console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received         
+              console.log('用户数据 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received         
+              console.log('用户数据 body:', body)
+
+              var nickname = body.nickname;
+              var sex = body.sex;
+              if (sex == 0) {
+                sex = "未"
+              } else if (sex == 1) {
+                sex = "男"
+              } else if (sex == 2) {
+                sex = "女"
+              }
+              var language = body.language;
+              var city = body.city;
+              var province = body.province;
+              var country = body.country;
+              var profileImageURL = body.headimageurl;
+
+              // Send text information to Slack
+              // @author Jack
+              // @see https://www.npmjs.com/package/request
+              // @see https://api.slack.com/incoming-webhooks#sending_messages
+              var slackWebhookMarketing = "https://hooks.slack.com/services/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";
+              request.post({
+                  url: slackWebhookMarketing,
+                  json: true,
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  body: {
+                    "text": nickname + "," + sex + "," + city + "：" + message.Content,
+                    "attachments": [{
+                      "text": "头像照片: " + profileImageURL
+                    }, {
+                      "text": "点击回复: mp.weixin.qq.com"
+                    }]
+                  }
+                },
+                function(err, httpResponse, body) { /* ... */
+                  if (err != null) {
+                    console.log('Slack error:', err); // Print the error if one occurred 
+
+                  } else {
+                    console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received         
+
+                  }
+                });
 
             }
           });
-
       }
     });
 
