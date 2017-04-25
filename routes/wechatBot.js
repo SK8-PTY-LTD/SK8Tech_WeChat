@@ -62,7 +62,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   // 获取公众号access_token
   // @author Jack
   // @see https://mp.weixin.qq.com/wiki/11/0e4b294685f817b95cbed85ba5e82b8f.html
-  var requestURL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&" + process.env.appid + "&openid=" + process.env.appsecret;
+  var requestURL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + process.env.appid + "&secret=" + process.env.appsecret;
   console.log("requestURL", requestURL);
   request.get({
       url: requestURL,
