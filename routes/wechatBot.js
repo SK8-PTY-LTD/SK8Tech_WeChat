@@ -62,7 +62,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   // 获取微信用户吗
   // @author Jack
   // @see https://mp.weixin.qq.com/wiki/14/bb5031008f1494a59c6f71fa0f319c66.html
-  var requestURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + process.env.token + "&openid=" + openId
+  var requestURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + process.env.token + "&openid=" + message.FromUserName;
 
   request.get({
       url: requestURL,
