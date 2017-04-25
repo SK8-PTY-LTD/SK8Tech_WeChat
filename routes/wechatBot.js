@@ -19,11 +19,10 @@ var request = require('request');
 //   console.log(req.res._events)
 // }));
 
-
 router.use('/', wechat(config).text(function(message, req, res, next) {
-  
+
   console.log("收到文字消息 ", message.Content);
-  
+
   // message为文本内容
   // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
   // CreateTime: '1359125035',
@@ -60,27 +59,32 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
       });
       break;
   }
-  
+
   // Send text information to Slack
   // @author Jack
   // @see https://www.npmjs.com/package/request
   // @see https://api.slack.com/incoming-webhooks#sending_messages
   var slackWebhookMarketing = "https://hooks.slack.com/services/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";
   request.post({
-    url:slackWebhookMarketing, 
-    headers: {
-      "Content-Type":"application/json"
+      url: slackWebhookMarketing,
+      json: true,
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: {
+        'text': message.Content
+      }
     },
-    body: {
-      'text':message.Content
-    }
-  }, function(err,httpResponse,body){ /* ... */ 
-    console.log('Slack error:', err); // Print the error if one occurred 
-    console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received 
-    console.log('Slack body:', body); // Print the HTML for the Google homepage. 
-  });
-  
-  
+    function(err, httpResponse, body) { /* ... */
+      if (err != null) {
+        console.log('Slack error:', err); // Print the error if one occurred 
+        response.error(httpResponse);
+      } else {
+        console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received 
+        console.log('Slack body:', body); // Print the HTML for the Google homepage. 
+      }
+    });
+
 }).image(function(message, req, res, next) {
   // message为图片内容
   // { ToUserName: 'gh_d3e07d51b513',
