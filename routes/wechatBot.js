@@ -112,7 +112,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
               var city = body.city;
               var province = body.province;
               var country = body.country;
-              var profileImageURL = body.headimageurl;
+              var profileImageURL = body.headimgurl;
 
               // Send text information to Slack
               // @author Jack
@@ -126,7 +126,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                     "Content-Type": "application/json"
                   },
                   body: {
-                    "text": nickname + "," + sex + "," + city + "：" + message.Content,
+                    "text": nickname + " [" + sex + ", " + province + "]：" + message.Content,
                     "attachments": [{
                       "text": "头像照片: " + profileImageURL
                     }, {
