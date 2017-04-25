@@ -59,27 +59,69 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
       break;
   }
 
-  // Send text information to Slack
+  // 获取微信用户吗
   // @author Jack
-  // @see https://www.npmjs.com/package/request
-  // @see https://api.slack.com/incoming-webhooks#sending_messages
-  var slackWebhookMarketing = "https://hooks.slack.com/services/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";
-  request.post({
-      url: slackWebhookMarketing,
+  // @see https://mp.weixin.qq.com/wiki/14/bb5031008f1494a59c6f71fa0f319c66.html
+  var requestURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + process.env.token + "&openid=" + openId
+
+  request.get({
+      url: requestURL,
       json: true,
       headers: {
         "Content-Type": "application/json"
-      },
-      body: {
-        'text': message.FromUserName + ": " + message.Content
       }
     },
     function(err, httpResponse, body) { /* ... */
       if (err != null) {
-        console.log('Slack error:', err); // Print the error if one occurred 
+        console.log('公众号 error:', err); // Print the error if one occurred 
 
       } else {
-        console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received         
+        console.log('公众号 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received         
+
+        var nickname = body.nickname;
+        var sex = body.sex;
+        if (sex == 0) {
+          sex = "未"
+        } else if (sex == 1) {
+          sex = "男"
+        } else if (sex == 2) {
+          sex = "女"
+        }
+        var language = body.language;
+        var city = body.city;
+        var province = body.province;
+        var country = body.country;
+        var profileImageURL = body.headimageurl;
+
+        // Send text information to Slack
+        // @author Jack
+        // @see https://www.npmjs.com/package/request
+        // @see https://api.slack.com/incoming-webhooks#sending_messages
+        var slackWebhookMarketing = "https://hooks.slack.com/services/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";
+        request.post({
+            url: slackWebhookMarketing,
+            json: true,
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: {
+              "text": nickname + "," + sex + "," + city + "：" + message.Content,
+              "attachments": [{
+                "text": "头像照片: " + profileImageURL
+              }, {
+                "text": "点击回复: mp.weixin.qq.com"
+              }]
+            }
+          },
+          function(err, httpResponse, body) { /* ... */
+            if (err != null) {
+              console.log('Slack error:', err); // Print the error if one occurred 
+
+            } else {
+              console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received         
+
+            }
+          });
 
       }
     });
