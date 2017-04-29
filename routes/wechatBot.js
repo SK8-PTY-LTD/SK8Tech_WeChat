@@ -322,16 +322,16 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
     for (primaryKey in wechatMenu.buttons) {
 
       var primaryButton = wechatMenu.buttons[primaryKey];
-      console.log("pirmaryButton ", pirmaryButton.name);
+      console.log("pirmaryButton ", primaryButton.name);
 
       for (secondaryKey in pirmaryButton.subButton) {
 
-        var primaryButton = wechatMenu.buttons[secondaryKey];
-        console.log("subButton ", subButton.name);
+        var secondaryButton = wechatMenu.buttons[secondaryKey];
+        console.log("secondaryButton ", secondaryButton.name);
 
-        if (eventKey == subButton.key) {
-          console.log("reply ", subButton.reply);
-          res.reply(subButton.reply);
+        if (eventKey == secondaryButton.key) {
+          console.log("reply ", secondaryButton.reply);
+          res.reply(secondaryButton.reply);
         }
       }
     }
