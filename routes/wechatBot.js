@@ -58,7 +58,7 @@ request.get({
               if (err != null) {
                 console.log("菜单 EEEEEor ", err);
               } else {
-                console.log("菜单 Success ", httpResponse);
+                console.log("菜单 Success ");
               }
             })
       }
