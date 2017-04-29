@@ -315,11 +315,20 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
     console.log("收到点击事件 ", message.EventKey);
 
     var eventKey = message.EventKey;
-    
-    for (pirmaryButton in wechatMenu.buttons) {
+
+    var primaryKey,
+        secondaryKey;
+
+    for (primaryKey in wechatMenu.buttons) {
+
+      var primaryButton = wechatMenu.buttons[primaryKey];
       console.log("pirmaryButton ", pirmaryButton.name);
-      for (subButton in pirmaryButton.subButton) {
+
+      for (secondaryKey in pirmaryButton.subButton) {
+
+        var primaryButton = wechatMenu.buttons[secondaryKey];
         console.log("subButton ", subButton.name);
+
         if (eventKey == subButton.key) {
           console.log("reply ", subButton.reply);
           res.reply(subButton.reply);
