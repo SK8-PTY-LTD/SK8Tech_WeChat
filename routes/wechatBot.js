@@ -112,48 +112,11 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   for (keyword in wechatReply.keywords) {
     if (message.Content.search(keyword) != -1) {
 
-      var reply = wechatReply.keywords[keyword];
+      var reply = wechatReply.keywords[keyword].reply;
       res.reply(reply);
       
     }
   }
-
-  // var keyArray = ['你好', '约吗', '作品'];
-  // var content = message.Content;
-  // var keyIndex = keyArray.indexOf(content);
-  // switch (keyIndex) {
-  //   case 0:
-  //     {
-  //       res.reply({
-  //         type: "text",
-  //         content: '你好，大家好才是真的好！'
-  //       });
-  //
-  //     }
-  //     break;
-  //   case 1:
-  //     {
-  //       res.reply({
-  //         type: "text",
-  //         content: '不约，不约，叔叔我们不约！'
-  //       });
-  //     }
-  //     break;
-  //   case 2:
-  //   {
-  //     res.reply({
-  //       type: "text",
-  //       content: '精品案例：\nhttps://sk8.tech/wp-content/uploads/2017/02/SK8Tech-Company-Portfoliointeractive.pdf'
-  //     });
-  //   }
-  //     break;
-  //   default:
-  //     res.reply({
-  //       type: "text",
-  //       content: '好咧亲~小编速速就来~'
-  //     });
-  //     break;
-  // }
 
   // 获取公众号access_token
   // @author Jack
