@@ -13,7 +13,7 @@ var api = new WechatAPI(process.env.appid,
 
 var request = require('request');
 
-var menuButtons = require('../settings/menu');
+var wechatMenu = require('../settings/menu');
 
 // router.use('/', wechat(config, function (req, res, next) {
 //   // 微信输入信息都在req.weixin上
@@ -51,7 +51,7 @@ request.get({
                 "content-type": "application/json"
               },
               body: {
-                "button": menu.buttons
+                "button": wechatMenu.buttons
               }
             },
             function (err, httpResponse, body) {
@@ -316,13 +316,13 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
     var eventKey = message.EventKey;
     
-    for (menuButton in menu.buttons) {
-      console.log("menuButton ", menuButton.name);
-      for (button in menuButton.subButton) {
-        console.log("button ", button.name);
-        if (eventKey == button.key) {
-          console.log("reply ", button.reply);
-          res.reply(button.reply);
+    for (pirmaryButton in wechatMenu.buttons) {
+      console.log("pirmaryButton ", pirmaryButton.name);
+      for (subButton in pirmaryButton.subButton) {
+        console.log("subButton ", subButton.name);
+        if (eventKey == subButton.key) {
+          console.log("reply ", subButton.reply);
+          res.reply(subButton.reply);
         }
       }
     }
