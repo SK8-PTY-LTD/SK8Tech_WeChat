@@ -21,48 +21,54 @@ var wechatMenu = require('../settings/menu');
 //   console.log(req.res._events)
 // }));
 
-// 创建菜单
-// @author Yitta
-// 1.get access_token
-var requestURL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + process.env.appid + "&secret=" + process.env.appsecret;
-console.log("requestURL", requestURL);
-request.get({
-      url: requestURL,
-      json: true,
-      headers: {
-        "Content-Type": "application/json"
-      }
-    },
-    function(err, httpResponse, body) {
-      if (err != null) {
-        console.log('公众号授权 error:', err); // Print the error if one occurred
-      } else {
-        // console.log('公众号授权 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
-        console.log('公众号授权 body:', body);
+/**
+ * Use this function to updateMenu
+ *
+ * @author Yitta
+ * @see
+ */
+router.use('/updateMenu', function(message, req, res, next) {
 
-        var newToken = body.access_token;
-        //2.创建表单并发送
-        var menuRequestURL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + newToken;
-        console.log("menuRequestURL", menuRequestURL);
-        request.post({
-              url: menuRequestURL,
-              json: true,
-              headers: {
-                "content-type": "application/json"
+  //1. Get Access token
+  var requestURL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + process.env.appid + "&secret=" + process.env.appsecret;
+  console.log("requestURL", requestURL);
+  request.get({
+        url: requestURL,
+        json: true,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      },
+      function(err, httpResponse, body) {
+        if (err != null) {
+          console.log('公众号授权 error:', err); // Print the error if one occurred
+        } else {
+
+          var newToken = body.access_token;
+
+          //2. 创建表单并发送
+          var menuRequestURL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + newToken;
+          request.post({
+                url: menuRequestURL,
+                json: true,
+                headers: {
+                  "content-type": "application/json"
+                },
+                body: {
+                  "button": wechatMenu.buttons
+                }
               },
-              body: {
-                "button": wechatMenu.buttons
-              }
-            },
-            function (err, httpResponse, body) {
-              if (err != null) {
-                console.log("菜单 EEEEEor ", err);
-              } else {
-                console.log("菜单 Success ");
-              }
-            })
-      }
-    });
+              function (err, httpResponse, body) {
+                if (err != null) {
+                  console.log("菜单 EEEEEor ", err);
+                } else {
+                  console.log("菜单 Success ");
+                }
+              })
+        }
+      });
+
+});
 
 //收到文字消息
 router.use('/', wechat(config).text(function(message, req, res, next) {
@@ -312,6 +318,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
 //CLICK事件响应
   if (message.Event == 'CLICK') {
+
     console.log("收到点击事件 ", message.EventKey);
 
     var eventKey = message.EventKey;
@@ -322,16 +329,14 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
     for (primaryKey in wechatMenu.buttons) {
 
       var primaryButton = wechatMenu.buttons[primaryKey];
-      console.log("pirmaryButton ", primaryButton.name);
 
       for (secondaryKey in primaryButton.sub_button) {
 
         var secondaryButton = primaryButton.sub_button[secondaryKey];
-        console.log("secondaryButton ", secondaryButton.name);
 
         if (eventKey == secondaryButton.key) {
-          console.log("reply ", secondaryButton.reply);
           res.reply(secondaryButton.reply);
+
         }
       }
     }
