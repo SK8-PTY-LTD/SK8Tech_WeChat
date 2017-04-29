@@ -316,8 +316,8 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
     var eventKey = message.EventKey;
     
-    for (menuButton in menu.buttons) {
-      for (button in menuButton.subButton) {
+    for (var menuButton in menu.buttons) {
+      for (var button in menuButton.subButton) {
         if (eventKey == button.key) {
           res.reply(button.reply);
         }
