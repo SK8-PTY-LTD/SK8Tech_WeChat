@@ -13,6 +13,8 @@ var api = new WechatAPI(process.env.appid,
 
 var request = require('request');
 
+var menuButtons = require('../settings/menu');
+
 // router.use('/', wechat(config, function (req, res, next) {
 //   // 微信输入信息都在req.weixin上
 //   console.log(req.query.openid);
@@ -39,7 +41,7 @@ request.get({
         console.log('公众号授权 body:', body);
 
         var newToken = body.access_token;
-        //创建表单并发送
+        //2.创建表单并发送
         var menuRequestURL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + newToken;
         console.log("menuRequestURL", menuRequestURL);
         request.post({
@@ -49,94 +51,7 @@ request.get({
                 "content-type": "application/json"
               },
               body: {
-                "button":[
-                  {
-                    "name":"服务介绍",
-                    "sub_button":[
-                      {
-                        "type":"click",
-                        "name":"品牌设计",
-                        "key":"品牌设计"
-                      },
-                      {
-                        "type":"click",
-                        "name":"官网建设",
-                        "key":"官网建设"
-                      },
-                      {
-                        "type":"click",
-                        "name":"App开发",
-                        "key":"App开发"
-                      },
-                      {
-                        "type":"click",
-                        "name":"线上推广",
-                        "key":"线上推广"
-                      },
-                      {
-                        "type":"click",
-                        "name":"报个价呗",
-                        "key":"报个价呗"
-                      }]
-                  },
-                  {
-                    "name":"精品案例",
-                    "sub_button":[
-                      {
-                        "type":"view",
-                        "name":"澳蕊源生坊",
-                        "url":"http://www.auralivingshop.com/waptouch/"
-                      },
-                      {
-                        "type":"view",
-                        "name":"生意达人",
-                        "url":"http://trademybusiness.com/"
-                      },
-                      {
-                        "type":"view",
-                        "name":"Unichi",
-                        "url":"https://unichi.com.au"
-                      },
-                      {
-                        "type":"view",
-                        "name":"Sundale",
-                        "url":"http://sundaledevelopments.com.au/"
-                      },
-                      {
-                        "type":"view",
-                        "name":"SpecEvent",
-                        "url":"http://specevent.com.au/"
-                      }]
-                  },
-                  {
-                    "name":"关于我们",
-                    "sub_button":[
-                      {
-                        "type":"click",
-                        "name":"企业介绍",
-                        "key":"企业介绍"
-                      },
-                      {
-                        "type":"click",
-                        "name":"价值使命",
-                        "key":"价值使命"
-                      },
-                      {
-                        "type":"click",
-                        "name":"团队介绍",
-                        "key":"团队介绍"
-                      },
-                      {
-                        "type":"click",
-                        "name":"技术孵化",
-                        "key":"技术孵化"
-                      },
-                      {
-                        "type":"click",
-                        "name":"联系我们",
-                        "key":"联系我们"
-                      }]
-                  }]
+                "button": menu.buttons
               }
             },
             function (err, httpResponse, body) {
@@ -149,7 +64,7 @@ request.get({
       }
     });
 
-
+//收到文字消息
 router.use('/', wechat(config).text(function(message, req, res, next) {
 
   console.log("收到文字消息 ", message.Content);
@@ -252,7 +167,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
               console.log('用户数据 error:', err); // Print the error if one occurred 
             } else {
               console.log('用户数据 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received         
-              console.log('用户数据 body:', body)
+              console.log('用户数据 body:', body);
 
               var nickname = body.nickname;
               var sex = body.sex;
