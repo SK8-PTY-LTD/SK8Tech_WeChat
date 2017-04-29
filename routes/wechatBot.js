@@ -19,6 +19,137 @@ var request = require('request');
 //   console.log(req.res._events)
 // }));
 
+// 创建菜单
+// @author Yitta
+// 1.get access_token
+var requestURL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + process.env.appid + "&secret=" + process.env.appsecret;
+console.log("requestURL", requestURL);
+request.get({
+      url: requestURL,
+      json: true,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    },
+    function(err, httpResponse, body) {
+      if (err != null) {
+        console.log('公众号授权 error:', err); // Print the error if one occurred
+      } else {
+        // console.log('公众号授权 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
+        console.log('公众号授权 body:', body);
+
+        var newToken = body.access_token;
+        //创建表单并发送
+        var menuRequestURL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + newToken;
+        console.log("menuRequestURL", menuRequestURL);
+        request.post({
+              url: menuRequestURL,
+              json: true,
+              headers: {
+                "content-type": "application/json"
+              },
+              body: {
+                "button":[
+                  {
+                    "name":"服务介绍",
+                    "sub_button":[
+                      {
+                        "type":"click",
+                        "name":"品牌设计",
+                        "key":"品牌设计"
+                      },
+                      {
+                        "type":"click",
+                        "name":"官网建设",
+                        "key":"官网建设"
+                      },
+                      {
+                        "type":"click",
+                        "name":"App开发",
+                        "key":"App开发"
+                      },
+                      {
+                        "type":"click",
+                        "name":"线上推广",
+                        "key":"线上推广"
+                      },
+                      {
+                        "type":"click",
+                        "name":"报个价呗",
+                        "key":"报个价呗"
+                      }]
+                  },
+                  {
+                    "name":"精品案例",
+                    "sub_button":[
+                      {
+                        "type":"view",
+                        "name":"澳蕊源生坊",
+                        "url":"http://www.auralivingshop.com/waptouch/"
+                      },
+                      {
+                        "type":"view",
+                        "name":"生意达人",
+                        "url":"http://trademybusiness.com/"
+                      },
+                      {
+                        "type":"view",
+                        "name":"Unichi",
+                        "url":"https://unichi.com.au"
+                      },
+                      {
+                        "type":"view",
+                        "name":"Sundale",
+                        "url":"http://sundaledevelopments.com.au/"
+                      },
+                      {
+                        "type":"view",
+                        "name":"SpecEvent",
+                        "url":"http://specevent.com.au/"
+                      }]
+                  },
+                  {
+                    "name":"关于我们",
+                    "sub_button":[
+                      {
+                        "type":"click",
+                        "name":"企业介绍",
+                        "key":"企业介绍"
+                      },
+                      {
+                        "type":"click",
+                        "name":"价值使命",
+                        "key":"价值使命"
+                      },
+                      {
+                        "type":"click",
+                        "name":"团队介绍",
+                        "key":"团队介绍"
+                      },
+                      {
+                        "type":"click",
+                        "name":"技术孵化",
+                        "key":"技术孵化"
+                      },
+                      {
+                        "type":"click",
+                        "name":"联系我们",
+                        "key":"联系我们"
+                      }]
+                  }]
+              }
+            },
+            function (err, httpResponse, body) {
+              if (err != null) {
+                console.log("菜单 EEEEEor ", err);
+              } else {
+                console.log("菜单 Success ", httpResponse);
+              }
+            })
+      }
+    });
+
+
 router.use('/', wechat(config).text(function(message, req, res, next) {
 
   console.log("收到文字消息 ", message.Content);
@@ -30,60 +161,43 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   // Content: 'http',
   // MsgId: '5837397576500011341' }
 
-  var keyArray = ['你好', '约吗', '案例','Case', '作品', '网站', 'App', '联络','联系', '电话', '邮箱', '微博', '官网', '网站', '手机'];
+  var keyArray = ['你好', '约吗', '作品'];
   var content = message.Content;
   var keyIndex = keyArray.indexOf(content);
-  // switch (keyIndex) {
-  //   case 0:
-  //     {
-  //       res.reply({
-  //         type: "text",
-  //         content: '你好，大家好才是真的好！'
-  //       });
-  //
-  //     }
-  //     break;
-  //   case 1:
-  //     {
-  //       res.reply({
-  //         type: "text",
-  //         content: '不约，不约，叔叔我们不约！'
-  //       });
-  //     }
-  //     break;
-  //   default:
-  //     res.reply({
-  //       type: "text",
-  //       content: '呀～公众号悄悄开发中～小编稍后联系你哦～'
-  //     });
-  //     break;
-  // }
-  if (keyIndex == 0) {
-    res.reply({
-      type: "text",
-      content: '你好，大家好才是真的好！'
-    });
-  } else if (keyIndex == 1){
-    res.reply({
-      type: "text",
-      content: '不约，不约，叔叔我们不约！'
-    });
-  } else if (1 < keyIndex < 7) {
-    res.reply({
+  switch (keyIndex) {
+    case 0:
+      {
+        res.reply({
           type: "text",
-          content: '精品案例：\nhttps://sk8.tech/wp-content/uploads/2017/02/SK8Tech-Company-Portfoliointeractive.pdf'
+          content: '你好，大家好才是真的好！'
         });
-  } else if (6 < keyIndex < 15) {
-    res.reply({
+
+      }
+      break;
+    case 1:
+      {
+        res.reply({
           type: "text",
-          content: 'SK8科技\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n←点击左边就可以联系客服了哦~'
+          content: '不约，不约，叔叔我们不约！'
         });
-  } else {
-    res.reply({
-      type: "text",
-      content: '呀～公众号悄悄开发中～小编稍后联系你哦～'
-    });
+      }
+      break;
+    case 2:
+    {
+      res.reply({
+        type: "text",
+        content: '精品案例：\nhttps://sk8.tech/wp-content/uploads/2017/02/SK8Tech-Company-Portfoliointeractive.pdf'
+      });
+    }
+      break;
+    default:
+      res.reply({
+        type: "text",
+        content: '呀～公众号悄悄开发中～小编稍后联系你哦～'
+      });
+      break;
   }
+
   //包含关键词回复
   // if (message.Content.contains('案例','Case', '作品', '网站', 'App')) {
   //   res.reply({
@@ -203,116 +317,6 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
             }
           });
-
-        // 创建菜单
-        // @author Yitta
-        // @see https://mp.weixin.qq.com/wiki/14/bb5031008f1494a59c6f71fa0f319c66.html
-        var menuRequestURL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + newToken;
-        console.log("menuRequestURL", menuRequestURL);
-        request.post({
-              url: menuRequestURL,
-              json: true,
-              headers: {
-                "content-type": "application/json"
-              },
-              body: {
-                "button":[
-                  {
-                    "name":"服务介绍",
-                    "sub_button":[
-                      {
-                        "type":"click",
-                        "name":"品牌设计",
-                        "key":"品牌设计"
-                      },
-                      {
-                        "type":"click",
-                        "name":"官网建设",
-                        "key":"官网建设"
-                      },
-                      {
-                        "type":"click",
-                        "name":"App开发",
-                        "key":"App开发"
-                      },
-                      {
-                        "type":"click",
-                        "name":"线上推广",
-                        "key":"线上推广"
-                      },
-                      {
-                        "type":"click",
-                        "name":"报个价呗",
-                        "key":"报个价呗"
-                      }]
-                  },
-                  {
-                    "name":"精品案例",
-                    "sub_button":[
-                      {
-                        "type":"view",
-                        "name":"澳蕊源生坊",
-                        "url":"http://www.auralivingshop.com/waptouch/"
-                      },
-                      {
-                        "type":"view",
-                        "name":"生意达人",
-                        "url":"http://trademybusiness.com/"
-                      },
-                      {
-                        "type":"view",
-                        "name":"Unichi",
-                        "url":"https://unichi.com.au"
-                      },
-                      {
-                        "type":"view",
-                        "name":"Sundale",
-                        "url":"http://sundaledevelopments.com.au/"
-                      },
-                      {
-                        "type":"view",
-                        "name":"SpecEvent",
-                        "url":"http://specevent.com.au/"
-                      }]
-                  },
-                  {
-                    "name":"关于我们",
-                    "sub_button":[
-                      {
-                        "type":"click",
-                        "name":"企业介绍",
-                        "key":"企业介绍"
-                      },
-                      {
-                        "type":"click",
-                        "name":"价值使命",
-                        "key":"价值使命"
-                      },
-                      {
-                        "type":"click",
-                        "name":"团队介绍",
-                        "key":"团队介绍"
-                      },
-                      {
-                        "type":"click",
-                        "name":"技术孵化",
-                        "key":"技术孵化"
-                      },
-                      {
-                        "type":"click",
-                        "name":"联系我们",
-                        "key":"联系我们"
-                      }]
-                  }]
-              }
-            },
-            function (err, httpResponse, body) {
-              if (err != null) {
-                console.log("菜单 EEEEEor ", err);
-              } else {
-                console.log("菜单 Success ", httpResponse);
-              }
-            })
       }
     });
 
@@ -394,28 +398,11 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 //CLICK事件响应
   if (message.Event == 'CLICK') {
     console.log("收到点击事件 ", message.EventKey);
-    var keyArray = ['你好', '约吗', '品牌设计', '官网建设', 'App开发', '线上推广', '报个价呗', '企业介绍', '价值使命', '团队介绍', '技术孵化', '联系我们'];
+    var keyArray = ['品牌设计', '官网建设', 'App开发', '线上推广', '报个价呗', '企业介绍', '价值使命', '团队介绍', '技术孵化', '联系我们'];
     var eventKey = message.EventKey;
     var keyIndex = keyArray.indexOf(eventKey);
     switch (keyIndex) {
       case 0:
-      {
-        res.reply({
-          type: "text",
-          content: '你好，大家好才是真的好！'
-        });
-
-      }
-        break;
-      case 1:
-      {
-        res.reply({
-          type: "text",
-          content: '不约，不约，叔叔我们不约！'
-        });
-      }
-        break;
-      case 2:
       {
         res.reply({
           type: "text",
@@ -424,7 +411,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
       }
         break;
-      case 3:
+      case 1:
       {
         res.reply({
           type: "text",
@@ -433,7 +420,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
       }
         break;
-      case 4:
+      case 2:
       {
         res.reply({
           type: "text",
@@ -442,7 +429,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
       }
         break;
-      case 5:
+      case 3:
       {
         res.reply({
           type: "text",
@@ -451,7 +438,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
       }
         break;
-      case 6:
+      case 4:
       {
         res.reply({
           type: "text",
@@ -460,7 +447,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
       }
         break;
-      case 7:
+      case 5:
       {
         res.reply({
           type: "text",
@@ -469,7 +456,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
       }
         break;
-      case 8:
+      case 6:
       {
         res.reply({
           type: "text",
@@ -478,7 +465,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
       }
         break;
-      case 9:
+      case 7:
       {
         res.reply({
           type: "text",
@@ -487,7 +474,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
       }
         break;
-      case 10:
+      case 8:
       {
         res.reply({
           type: "text",
@@ -496,7 +483,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
       }
         break;
-      case 11:
+      case 9:
       {
         res.reply({
           type: "text",
@@ -551,13 +538,13 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                   if (err != null) {
                     console.log('用户数据 error:', err); // Print the error if one occurred
                   } else {
-                    console.log('用户数据 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
-                    console.log('用户数据 body:', body);
+                    console.log('新关注用户数据 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
+                    console.log('新关注用户数据 body:', body);
                    //用户名获取
                     var nickname = body.nickname;
                     res.reply({
                       type: "text",
-                      content: '亲爱的' + nickname + '，你怎么这么晚才来？你知道自己错过了多少互联网大事吗！！！\n\n想要看看SK8科技能够为你做些什么。。。\n赶快回复“作品”，或点这里试试\n\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓\n↓↓↓\n↓↓↓\n↓↓\n↓↓\n↓↓\n↓'
+                      content: '亲爱的' + nickname + '~，你怎么这么晚才来？你知道自己错过了多少互联网大事吗！！！\n\n想要看看SK8科技能够为你做些什么。。。\n赶快回复“作品”，或点这里试试\n\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓\n↓↓↓\n↓↓↓\n↓↓\n↓↓\n↓↓\n↓'
                     });
                   }
                 })
