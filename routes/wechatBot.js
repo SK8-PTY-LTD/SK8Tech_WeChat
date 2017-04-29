@@ -14,6 +14,7 @@ var api = new WechatAPI(process.env.appid,
 var request = require('request');
 
 var wechatMenu = require('../settings/menu');
+var wechatReply = require('../settings/reply');
 
 // router.use('/', wechat(config, function (req, res, next) {
 //   // 微信输入信息都在req.weixin上
@@ -27,9 +28,53 @@ var wechatMenu = require('../settings/menu');
  * @author Yitta
  * @see
  */
-router.use('/updateMenu', function(message, req, res, next) {
+function updateMenu() {
 
   //1. Get Access token
+  getAccessToken({
+    success: function(accessToken) {
+      
+      //2. 创建表单并发送
+      var menuRequestURL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + accessToken;
+      request.post({
+            url: menuRequestURL,
+            json: true,
+            headers: {
+              "content-type": "application/json"
+            },
+            body: {
+              "button": wechatMenu.buttons
+            }
+          },
+          function (err, httpResponse, body) {
+            if (err != null) {
+              console.log("菜单 EEEEEor ", err);
+            } else {
+              console.log("菜单 Success ");
+            }
+          })
+      
+    },
+    error:function(error) {
+      
+      console.log("菜单更新 EEEEEor ", err);
+      
+    }
+  });
+};
+updateMenu();
+
+/**
+ * Use this function to get AccessToken from WeChat
+ * 
+ * @author Yitta
+ * @see 
+ * 
+ * @param callback
+ */
+function getAccessToken(callback) {
+
+  // Get Access token
   var requestURL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + process.env.appid + "&secret=" + process.env.appsecret;
   console.log("requestURL", requestURL);
   request.get({
@@ -39,36 +84,16 @@ router.use('/updateMenu', function(message, req, res, next) {
           "Content-Type": "application/json"
         }
       },
-      function(err, httpResponse, body) {
+      function (err, httpResponse, body) {
         if (err != null) {
           console.log('公众号授权 error:', err); // Print the error if one occurred
+          callback.error(err);
         } else {
-
-          var newToken = body.access_token;
-
-          //2. 创建表单并发送
-          var menuRequestURL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + newToken;
-          request.post({
-                url: menuRequestURL,
-                json: true,
-                headers: {
-                  "content-type": "application/json"
-                },
-                body: {
-                  "button": wechatMenu.buttons
-                }
-              },
-              function (err, httpResponse, body) {
-                if (err != null) {
-                  console.log("菜单 EEEEEor ", err);
-                } else {
-                  console.log("菜单 Success ");
-                }
-              })
+          console.log('公众号授权 success, token: ', body.access_token);
+          callback.success(body.access_token);
         }
       });
-
-});
+}
 
 //收到文字消息
 router.use('/', wechat(config).text(function(message, req, res, next) {
@@ -82,58 +107,53 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   // Content: 'http',
   // MsgId: '5837397576500011341' }
 
-  var keyArray = ['你好', '约吗', '作品'];
-  var content = message.Content;
-  var keyIndex = keyArray.indexOf(content);
-  switch (keyIndex) {
-    case 0:
-      {
-        res.reply({
-          type: "text",
-          content: '你好，大家好才是真的好！'
-        });
+  var keyword;
+  
+  for (keyword in wechatReply.keywords) {
+    if (message.Content.search(keyword) != -1) {
 
-      }
-      break;
-    case 1:
-      {
-        res.reply({
-          type: "text",
-          content: '不约，不约，叔叔我们不约！'
-        });
-      }
-      break;
-    case 2:
-    {
-      res.reply({
-        type: "text",
-        content: '精品案例：\nhttps://sk8.tech/wp-content/uploads/2017/02/SK8Tech-Company-Portfoliointeractive.pdf'
-      });
+      var reply = wechatReply.keywords[keyword];
+      res.reply(reply);
+      
     }
-      break;
-    default:
-      res.reply({
-        type: "text",
-        content: '好咧亲~小编速速就来~'
-      });
-      break;
   }
 
-  //包含关键词回复
-  // if (message.Content.contains('案例','Case', '作品', '网站', 'App')) {
-  //   res.reply({
-  //     type: "text",
-  //     content: '精品案例：\nhttps://sk8.tech/wp-content/uploads/2017/02/SK8Tech-Company-Portfoliointeractive.pdf'
-  //   });
-  // }
+  // var keyArray = ['你好', '约吗', '作品'];
+  // var content = message.Content;
+  // var keyIndex = keyArray.indexOf(content);
+  // switch (keyIndex) {
+  //   case 0:
+  //     {
+  //       res.reply({
+  //         type: "text",
+  //         content: '你好，大家好才是真的好！'
+  //       });
   //
-  // if (message.Content.contains('联络','联系', '电话', '邮箱', '微博', '官网', '网站', '手机')) {
-  //   res.reply({
-  //     type: "text",
-  //     content: 'SK8科技\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n←点击左边就可以联系客服了哦~'
-  //   });
+  //     }
+  //     break;
+  //   case 1:
+  //     {
+  //       res.reply({
+  //         type: "text",
+  //         content: '不约，不约，叔叔我们不约！'
+  //       });
+  //     }
+  //     break;
+  //   case 2:
+  //   {
+  //     res.reply({
+  //       type: "text",
+  //       content: '精品案例：\nhttps://sk8.tech/wp-content/uploads/2017/02/SK8Tech-Company-Portfoliointeractive.pdf'
+  //     });
+  //   }
+  //     break;
+  //   default:
+  //     res.reply({
+  //       type: "text",
+  //       content: '好咧亲~小编速速就来~'
+  //     });
+  //     break;
   // }
-
 
   // 获取公众号access_token
   // @author Jack
