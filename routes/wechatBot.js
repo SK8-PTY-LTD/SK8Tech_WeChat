@@ -51,96 +51,6 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
         });
       }
       break;
-    case 2:
-    {
-      res.reply({
-        type: "text",
-        content: '我们提供全套的品牌设计，包括:\n\n纯Logo：彩色，单色的Logo\n品牌版：Logo，名片，企业文件夹，信纸信封，定制文具等\n至尊版：电子名片，邮件签名，二维码，企业官网，微信公众号等\n\n更多详情，欢迎咨询客服~\n\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n←点击左边就可以联系客服了哦~'
-      });
-
-    }
-      break;
-    case 3:
-    {
-      res.reply({
-        type: "text",
-        content: '信息时代，没官网怎么行？我们提供全套的管网设计以及开发，包括:\n\nPC版：15页网站设计+开发，SEO优化，可选博客，论坛等功能\n手机版：15页网站设计+开发，SEO优化，可选博客，论坛等功能\n商城：各类商城或微店\n\n更多详情，欢迎咨询客服~\n\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n←点击左边就可以联系客服了哦~'
-      });
-
-    }
-      break;
-    case 4:
-    {
-      res.reply({
-        type: "text",
-        content: '我的App我做主！告诉我们你的想法，无论复杂简单，我们都能替你做出来！包括：\n\n原生App：可以在App Store中下载到的App\n网页App：可以通过二维码扫一扫即用的App\n小程序：微信生态圈中一次崭新尝试\n\n更多详情，欢迎咨询客服~\n\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n←点击左边就可以联系客服了哦~'
-      });
-
-    }
-      break;
-    case 5:
-    {
-      res.reply({
-        type: "text",
-        content: '让你的顾客找到你，不再擦肩而过！我们提供在线推广服务，包括：\n\n谷歌百度排名：让你的网站出现在第一页\n点击付费广告：付费将用户引流到你的网站\nASO：App Store 排名优化\n微信代运营：公众号代运营\n外媒代运营：Facebook，Twitter，Google+代运营\n\n更多详情，欢迎咨询客服~\n\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n←点击左边就可以联系客服了哦~'
-      });
-
-    }
-      break;
-    case 6:
-    {
-      res.reply({
-        type: "text",
-        content: '感谢您的兴趣~我们特别高兴能够成为你的左膀右臂！\n\n由于每个项目的范围，耗时，都不一样，报价得视项目详细而定，请联系我们热气的客服，我们将第一时间为您报价！\n\n只需复制黏贴以下文字，回复客服，我们将在48小时内给您一个报价~\n\n更多详情，欢迎咨询客服~\n\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n\n←点击左边就可以联系客服了哦~亲~\n\n项目名称：\n联系邮箱：\n项目类型：设计/网站/App/微信/推广\n项目简介：'
-      });
-
-    }
-      break;
-    case 7:
-    {
-      res.reply({
-        type: "text",
-        content: 'SK8科技于13年创立在新加坡。4年内，我们跨越了3个国家，坐落于澳洲悉尼市中心及上海杨浦。\nSK8科技是一家跨国 IT 开发以及技术孵化公司，我们致力于为中小型企业，尤其是初创团队，提供一站式的技术服务。\n我们的服务包括品牌设计，官网建站，App开发，以及在线推广。\n对有潜力的初创公司，我们也提供技术孵化服务，为创业加速。'
-      });
-
-    }
-      break;
-    case 8:
-    {
-      res.reply({
-        type: "text",
-        content: '初创团队往往需要最专业的团队，以最快的速度 完成从产品到推广。作为创业先驱，我们深刻体会初创公司的辛苦。\n我们立志为中小企业提供一站式技术服务。助力创业，技术孵化，荣辱与共，共创辉煌。'
-      });
-
-    }
-      break;
-    case 9:
-    {
-      res.reply({
-        type: "text",
-        content: '工匠精神-我们的团队有着各式各样的人才大牛，包括商务分析，设计，开发，测试，市场 等。\n我们注重人才培养，并且提供学习条件。我们重视团建，因为一流的团队才能雕琢 一流的作品。\n同时，我们随时欢迎人才加入。请直接联系小编，或者将简历发至 hi@sk8.tech'
-      });
-
-    }
-      break;
-    case 10:
-    {
-      res.reply({
-        type: "text",
-        content: '对于有潜力的互联网项目，我们将以“技术孵化”的形式，以一定比例参股，并且提供\n1. 专业的创业导师\n2. 精锐的技术团队\n3. 轻松的办公氛围\n4. 丰富的运营经验\n截止17年2月，SK8科技已“技术孵化”海内外4个互联网公司，总估值超过3500万人民币。'
-      });
-
-    }
-      break;
-    case 11:
-    {
-      res.reply({
-        type: "text",
-        content: 'SK8科技\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n←点击左边就可以联系客服了哦~'
-      });
-
-    }
-      break;
     default:
       res.reply({
         type: "text",
@@ -256,9 +166,8 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
         // 创建菜单
         // @author Yitta
         // @see https://mp.weixin.qq.com/wiki/14/bb5031008f1494a59c6f71fa0f319c66.html
-        // var userRequestURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + newToken + "&openid=" + message.FromUserName;
-        var menuRequestURL = " https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + newToken;
-        console.log("userRequestURL", menuRequestURL);
+        var menuRequestURL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + newToken;
+        console.log("menuRequestURL", menuRequestURL);
         request.post({
               url: menuRequestURL,
               json: true,
@@ -433,12 +342,136 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
   // CreateTime: '1359125022',
   // MsgType: 'event',
-  // Event: 'LOCATION',
+  // Event: 'CLICK',
+  // EventKey: 'KEY',
   // Latitude: '23.137466',
   // Longitude: '113.352425',
   // Precision: '119.385040',
   // MsgId: '5837397520665436492' }
   // TODO
+
+  if (message.Event == 'CLICK') {
+    console.log("收到点击事件 ", message.EventKey);
+    var keyArray = ['你好', '约吗', '品牌设计', '官网建设', 'App开发', '线上推广', '报个价呗', '企业介绍', '价值使命', '团队介绍', '技术孵化', '联系我们'];
+    var eventKey = message.EventKey;
+    var keyIndex = keyArray.indexOf(eventKey);
+    switch (keyIndex) {
+      case 0:
+      {
+        res.reply({
+          type: "text",
+          content: '你好，大家好才是真的好！'
+        });
+
+      }
+        break;
+      case 1:
+      {
+        res.reply({
+          type: "text",
+          content: '不约，不约，叔叔我们不约！'
+        });
+      }
+        break;
+      case 2:
+      {
+        res.reply({
+          type: "text",
+          content: '我们提供全套的品牌设计，包括:\n\n纯Logo：彩色，单色的Logo\n品牌版：Logo，名片，企业文件夹，信纸信封，定制文具等\n至尊版：电子名片，邮件签名，二维码，企业官网，微信公众号等\n\n更多详情，欢迎咨询客服~\n\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n←点击左边就可以联系客服了哦~'
+        });
+
+      }
+        break;
+      case 3:
+      {
+        res.reply({
+          type: "text",
+          content: '信息时代，没官网怎么行？我们提供全套的管网设计以及开发，包括:\n\nPC版：15页网站设计+开发，SEO优化，可选博客，论坛等功能\n手机版：15页网站设计+开发，SEO优化，可选博客，论坛等功能\n商城：各类商城或微店\n\n更多详情，欢迎咨询客服~\n\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n←点击左边就可以联系客服了哦~'
+        });
+
+      }
+        break;
+      case 4:
+      {
+        res.reply({
+          type: "text",
+          content: '我的App我做主！告诉我们你的想法，无论复杂简单，我们都能替你做出来！包括：\n\n原生App：可以在App Store中下载到的App\n网页App：可以通过二维码扫一扫即用的App\n小程序：微信生态圈中一次崭新尝试\n\n更多详情，欢迎咨询客服~\n\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n←点击左边就可以联系客服了哦~'
+        });
+
+      }
+        break;
+      case 5:
+      {
+        res.reply({
+          type: "text",
+          content: '让你的顾客找到你，不再擦肩而过！我们提供在线推广服务，包括：\n\n谷歌百度排名：让你的网站出现在第一页\n点击付费广告：付费将用户引流到你的网站\nASO：App Store 排名优化\n微信代运营：公众号代运营\n外媒代运营：Facebook，Twitter，Google+代运营\n\n更多详情，欢迎咨询客服~\n\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n←点击左边就可以联系客服了哦~'
+        });
+
+      }
+        break;
+      case 6:
+      {
+        res.reply({
+          type: "text",
+          content: '感谢您的兴趣~我们特别高兴能够成为你的左膀右臂！\n\n由于每个项目的范围，耗时，都不一样，报价得视项目详细而定，请联系我们热气的客服，我们将第一时间为您报价！\n\n只需复制黏贴以下文字，回复客服，我们将在48小时内给您一个报价~\n\n更多详情，欢迎咨询客服~\n\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n\n←点击左边就可以联系客服了哦~亲~\n\n项目名称：\n联系邮箱：\n项目类型：设计/网站/App/微信/推广\n项目简介：'
+        });
+
+      }
+        break;
+      case 7:
+      {
+        res.reply({
+          type: "text",
+          content: 'SK8科技于13年创立在新加坡。4年内，我们跨越了3个国家，坐落于澳洲悉尼市中心及上海杨浦。\nSK8科技是一家跨国 IT 开发以及技术孵化公司，我们致力于为中小型企业，尤其是初创团队，提供一站式的技术服务。\n我们的服务包括品牌设计，官网建站，App开发，以及在线推广。\n对有潜力的初创公司，我们也提供技术孵化服务，为创业加速。'
+        });
+
+      }
+        break;
+      case 8:
+      {
+        res.reply({
+          type: "text",
+          content: '初创团队往往需要最专业的团队，以最快的速度 完成从产品到推广。作为创业先驱，我们深刻体会初创公司的辛苦。\n我们立志为中小企业提供一站式技术服务。助力创业，技术孵化，荣辱与共，共创辉煌。'
+        });
+
+      }
+        break;
+      case 9:
+      {
+        res.reply({
+          type: "text",
+          content: '工匠精神-我们的团队有着各式各样的人才大牛，包括商务分析，设计，开发，测试，市场 等。\n我们注重人才培养，并且提供学习条件。我们重视团建，因为一流的团队才能雕琢 一流的作品。\n同时，我们随时欢迎人才加入。请直接联系小编，或者将简历发至 hi@sk8.tech'
+        });
+
+      }
+        break;
+      case 10:
+      {
+        res.reply({
+          type: "text",
+          content: '对于有潜力的互联网项目，我们将以“技术孵化”的形式，以一定比例参股，并且提供\n1. 专业的创业导师\n2. 精锐的技术团队\n3. 轻松的办公氛围\n4. 丰富的运营经验\n截止17年2月，SK8科技已“技术孵化”海内外4个互联网公司，总估值超过3500万人民币。'
+        });
+
+      }
+        break;
+      case 11:
+      {
+        res.reply({
+          type: "text",
+          content: 'SK8科技\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n←点击左边就可以联系客服了哦~'
+        });
+
+      }
+        break;
+      default:
+        res.reply({
+          type: "text",
+          content: '呀～公众号悄悄开发中～小编稍后联系你哦～'
+        });
+        break;
+    }
+  }
+
 }).device_text(function(message, req, res, next) {
   // message为设备文本消息内容
   // { ToUserName: 'gh_d3e07d51b513',
