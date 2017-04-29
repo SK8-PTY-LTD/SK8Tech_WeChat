@@ -30,7 +30,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   // Content: 'http',
   // MsgId: '5837397576500011341' }
 
-  var keyArray = ['你好', '约吗', '品牌设计', '官网建设', 'App开发', '线上推广', '报个价呗', '企业介绍', '价值使命', '团队介绍', '技术孵化', '联系我们'];
+  var keyArray = ['你好', '约吗'];
   var content = message.Content;
   var keyIndex = keyArray.indexOf(content);
   switch (keyIndex) {
@@ -471,6 +471,59 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
         break;
     }
   }
+
+  //关注自动回复
+  if (message.Event == 'subscribe') {
+    console.log("收到新关注", message.FromUserName);
+    var requestURL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + process.env.appid + "&secret=" + process.env.appsecret;
+    console.log("requestURL", requestURL);
+    request.get({
+          url: requestURL,
+          json: true,
+          headers: {
+            "Content-Type": "application/json"
+          }
+        },
+        function(err, httpResponse, body) {
+          if (err != null) {
+            console.log('公众号授权 error:', err); // Print the error if one occurred
+          } else {
+            // console.log('公众号授权 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
+            console.log('公众号授权 body:', body);
+
+            var newToken = body.access_token;
+
+            // 获取微信用户吗
+            // @author Jack
+            // @see https://mp.weixin.qq.com/wiki/14/bb5031008f1494a59c6f71fa0f319c66.html
+            var userRequestURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + newToken + "&openid=" + message.FromUserName;
+            // console.log("userRequestURL", userRequestURL);
+            request.get({
+                  url: userRequestURL,
+                  json: true,
+                  headers: {
+                    "Content-Type": "application/json"
+                  }
+                },
+                function (err, httpResponse, body) {
+                  if (err != null) {
+                    console.log('用户数据 error:', err); // Print the error if one occurred
+                  } else {
+                    console.log('用户数据 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
+                    console.log('用户数据 body:', body);
+
+                    var nickname = body.nickname;
+                    res.reply({
+                      type: "text",
+                      content: '亲爱的' + nickname + '，你怎么这么晚才来？你知道自己错过了多少互联网大事吗！！！\n\n想要看看SK8科技能够为你做些什么。。。\n赶快回复“作品”，或点这里试试\n\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓\n↓↓↓\n↓↓↓\n↓↓\n↓↓\n↓↓\n↓'
+                    });
+                  }
+                })
+          }
+        });
+  }
+
+  //content: "亲爱的，你怎么这么晚才来？你知道自己错过了多少互联网大事吗！！！\n\n想要看看SK8科技能够为你做些什么。。。\n赶快回复“作品”，或点这里试试\n\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓\n↓↓↓\n↓↓↓\n↓↓\n↓↓\n↓↓\n↓"
 
 }).device_text(function(message, req, res, next) {
   // message为设备文本消息内容
