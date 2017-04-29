@@ -326,7 +326,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
       for (secondaryKey in primaryButton.sub_button) {
 
-        var secondaryButton = primaryButton[secondaryKey];
+        var secondaryButton = primaryButton.sub_button[secondaryKey];
         console.log("secondaryButton ", secondaryButton.name);
 
         if (eventKey == secondaryButton.key) {
