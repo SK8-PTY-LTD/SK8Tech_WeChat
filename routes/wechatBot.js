@@ -30,48 +30,74 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   // Content: 'http',
   // MsgId: '5837397576500011341' }
 
-  var keyArray = ['你好', '约吗'];
+  var keyArray = ['你好', '约吗', '案例','Case', '作品', '网站', 'App', '联络','联系', '电话', '邮箱', '微博', '官网', '网站', '手机'];
   var content = message.Content;
   var keyIndex = keyArray.indexOf(content);
-  switch (keyIndex) {
-    case 0:
-      {
-        res.reply({
+  // switch (keyIndex) {
+  //   case 0:
+  //     {
+  //       res.reply({
+  //         type: "text",
+  //         content: '你好，大家好才是真的好！'
+  //       });
+  //
+  //     }
+  //     break;
+  //   case 1:
+  //     {
+  //       res.reply({
+  //         type: "text",
+  //         content: '不约，不约，叔叔我们不约！'
+  //       });
+  //     }
+  //     break;
+  //   default:
+  //     res.reply({
+  //       type: "text",
+  //       content: '呀～公众号悄悄开发中～小编稍后联系你哦～'
+  //     });
+  //     break;
+  // }
+  if (keyIndex == 0) {
+    res.reply({
+      type: "text",
+      content: '你好，大家好才是真的好！'
+    });
+  } else if (keyIndex == 1){
+    res.reply({
+      type: "text",
+      content: '不约，不约，叔叔我们不约！'
+    });
+  } else if (1 < keyIndex < 7) {
+    res.reply({
           type: "text",
-          content: '你好，大家好才是真的好！'
+          content: '精品案例：\nhttps://sk8.tech/wp-content/uploads/2017/02/SK8Tech-Company-Portfoliointeractive.pdf'
         });
-
-      }
-      break;
-    case 1:
-      {
-        res.reply({
+  } else if (6 < keyIndex < 15) {
+    res.reply({
           type: "text",
-          content: '不约，不约，叔叔我们不约！'
+          content: 'SK8科技\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n←点击左边就可以联系客服了哦~'
         });
-      }
-      break;
-    // default:
-    //   res.reply({
-    //     type: "text",
-    //     content: '呀～公众号悄悄开发中～小编稍后联系你哦～'
-    //   });
-    //   break;
+  } else {
+    res.reply({
+      type: "text",
+      content: '呀～公众号悄悄开发中～小编稍后联系你哦～'
+    });
   }
   //包含关键词回复
-  if (message.Content.contains('案例','Case', '作品', '网站', 'App')) {
-    res.reply({
-      type: "text",
-      content: '精品案例：\nhttps://sk8.tech/wp-content/uploads/2017/02/SK8Tech-Company-Portfoliointeractive.pdf'
-    });
-  }
-
-  if (message.Content.contains('联络','联系', '电话', '邮箱', '微博', '官网', '网站', '手机')) {
-    res.reply({
-      type: "text",
-      content: 'SK8科技\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n←点击左边就可以联系客服了哦~'
-    });
-  }
+  // if (message.Content.contains('案例','Case', '作品', '网站', 'App')) {
+  //   res.reply({
+  //     type: "text",
+  //     content: '精品案例：\nhttps://sk8.tech/wp-content/uploads/2017/02/SK8Tech-Company-Portfoliointeractive.pdf'
+  //   });
+  // }
+  //
+  // if (message.Content.contains('联络','联系', '电话', '邮箱', '微博', '官网', '网站', '手机')) {
+  //   res.reply({
+  //     type: "text",
+  //     content: 'SK8科技\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n←点击左边就可以联系客服了哦~'
+  //   });
+  // }
 
 
   // 获取公众号access_token
