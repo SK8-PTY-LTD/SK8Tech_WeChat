@@ -51,12 +51,12 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
         });
       }
       break;
-    default:
-      res.reply({
-        type: "text",
-        content: '呀～公众号悄悄开发中～小编稍后联系你哦～'
-      });
-      break;
+    // default:
+    //   res.reply({
+    //     type: "text",
+    //     content: '呀～公众号悄悄开发中～小编稍后联系你哦～'
+    //   });
+    //   break;
   }
   //包含关键词回复
   keyWordsArray1 = ['案例','Case', '作品', '网站', 'App'];
