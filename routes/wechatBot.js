@@ -58,6 +58,20 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
       });
       break;
   }
+  //包含关键词回复
+  if (message.Content.contains('案例','Case', '作品', '网站', 'App')) {
+    res.reply({
+      type: "text",
+      content: '精品案例：\nhttps://sk8.tech/wp-content/uploads/2017/02/SK8Tech-Company-Portfoliointeractive.pdf'
+    });
+  }
+
+  if (message.Content.contains('联络','联系', '电话', '邮箱', '微博', '官网', '网站', '手机')) {
+    res.reply({
+      type: "text",
+      content: 'SK8科技\n邮件：hi@sk8.tech\n网址：https://sk8.tech\n微博：weibo.com/sk8tech\n←点击左边就可以联系客服了哦~'
+    });
+  }
 
   // 获取公众号access_token
   // @author Jack
@@ -350,6 +364,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   // MsgId: '5837397520665436492' }
   // TODO
 
+//CLICK事件响应
   if (message.Event == 'CLICK') {
     console.log("收到点击事件 ", message.EventKey);
     var keyArray = ['你好', '约吗', '品牌设计', '官网建设', 'App开发', '线上推广', '报个价呗', '企业介绍', '价值使命', '团队介绍', '技术孵化', '联系我们'];
@@ -472,9 +487,10 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
     }
   }
 
-  //关注自动回复
+  //关注自动回复 + 用户名
   if (message.Event == 'subscribe') {
     console.log("收到新关注", message.FromUserName);
+
     var requestURL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + process.env.appid + "&secret=" + process.env.appsecret;
     console.log("requestURL", requestURL);
     request.get({
@@ -493,9 +509,8 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
             var newToken = body.access_token;
 
-            // 获取微信用户吗
-            // @author Jack
-            // @see https://mp.weixin.qq.com/wiki/14/bb5031008f1494a59c6f71fa0f319c66.html
+
+            // 获取微信用户信息
             var userRequestURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + newToken + "&openid=" + message.FromUserName;
             // console.log("userRequestURL", userRequestURL);
             request.get({
@@ -511,7 +526,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                   } else {
                     console.log('用户数据 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
                     console.log('用户数据 body:', body);
-
+                   //用户名获取
                     var nickname = body.nickname;
                     res.reply({
                       type: "text",
@@ -522,8 +537,6 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
           }
         });
   }
-
-  //content: "亲爱的，你怎么这么晚才来？你知道自己错过了多少互联网大事吗！！！\n\n想要看看SK8科技能够为你做些什么。。。\n赶快回复“作品”，或点这里试试\n\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓\n↓↓↓\n↓↓↓\n↓↓\n↓↓\n↓↓\n↓"
 
 }).device_text(function(message, req, res, next) {
   // message为设备文本消息内容
