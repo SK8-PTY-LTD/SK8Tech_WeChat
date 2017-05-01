@@ -16,6 +16,12 @@ var request = require('request');
 var wechatMenu = require('../settings/menu');
 var wechatReply = require('../settings/reply');
 
+
+// 引用 node-slack 库，详细请查看 https://github.com/xoxco/node-slack *注意:可能需要设置
+//@see 设置:https://github.com/xoxco/node-slack/blob/master/slack.js
+// var Slack = require('node-slack');
+
+
 // router.use('/', wechat(config, function (req, res, next) {
 //   // 微信输入信息都在req.weixin上
 //   console.log(req.query.openid);
@@ -218,6 +224,71 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
   }
     sendMessageToSlack();
 
+    /**
+     * 由slack发送信息至Wechat
+     * @author Yitta
+     * 
+     * @see https://github.com/xoxco/node-slack
+     * @see 设置:https://github.com/xoxco/node-slack/blob/master/slack.js
+     *
+     * @see https://mp.weixin.qq.com/wiki/11/c88c270ae8935291626538f9c64bd123.html#.E5.AE.A2.E6.9C.8D.E6.8E.A5.E5.8F.A3-.E5.8F.91.E6.B6.88.E6.81.AF
+     */
+    // function sendMessageToWechat() {
+    //     // 1. 由slack发送信息至URL
+    //     var slack = new Slack(hook_url,options);
+    //     app.post('/yesman',function(req,res) {
+    //
+    //         var reply = slack.respond(req.body,function(hook) {
+    //
+    //             return {
+    //                 text: 'Good point, ' + hook.user_name,
+    //                 username: 'Bot'
+    //             };
+    //
+    //         });
+    //         //message包
+    //         res.json(reply);
+    //
+    //     });
+    //     //2. 信息发送至wechat
+    //     getAccessToken({
+    //         success: function(accessToken) {
+    //
+    //             var messageRequestURL = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken;
+    //             request.post({
+    //                     url: messageRequestURL,
+    //                     json: true,
+    //                     headers: {
+    //                         "content-type": "application/json"
+    //                     },
+    //                     body: {
+    //                         "touser": message.FromUserName,
+    //                         "msgtype":"text",
+    //                         "text":
+    //                         {
+    //                             "content": reply.text
+    //                         }
+    //                     }
+    //                 },
+    //                 function (err, httpResponse, body) {
+    //                     if (err != null) {
+    //                         console.log("发送至wechat EEEEEor ", err);
+    //                     } else {
+    //                         console.log("发送至wechat Success ");
+    //                     }
+    //                 })
+    //
+    //         },
+    //         error:function(error) {
+    //
+    //             console.log("发送至wechat 失败 ", error);
+    //
+    //         }
+    //     });
+    // }
+
+
+
 }).image(function(message, req, res, next) {
   // message为图片内容
   // { ToUserName: 'gh_d3e07d51b513',
@@ -360,52 +431,6 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
           }
       });
-
-    // var requestURL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + process.env.appid + "&secret=" + process.env.appsecret;
-    // console.log("requestURL", requestURL);
-    // request.get({
-    //       url: requestURL,
-    //       json: true,
-    //       headers: {
-    //         "Content-Type": "application/json"
-    //       }
-    //     },
-    //     function(err, httpResponse, body) {
-    //       if (err != null) {
-    //         console.log('公众号授权 error:', err); // Print the error if one occurred
-    //       } else {
-    //         // console.log('公众号授权 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
-    //         console.log('公众号授权 body:', body);
-    //
-    //         var newToken = body.access_token;
-    //
-    //
-    //         // 获取微信用户信息
-    //         var userRequestURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + newToken + "&openid=" + message.FromUserName;
-    //         // console.log("userRequestURL", userRequestURL);
-    //         request.get({
-    //               url: userRequestURL,
-    //               json: true,
-    //               headers: {
-    //                 "Content-Type": "application/json"
-    //               }
-    //             },
-    //             function (err, httpResponse, body) {
-    //               if (err != null) {
-    //                 console.log('用户数据 error:', err); // Print the error if one occurred
-    //               } else {
-    //                 console.log('新关注用户数据 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
-    //                 console.log('新关注用户数据 body:', body);
-    //                //用户名获取
-    //                 var nickname = body.nickname;
-    //                 res.reply({
-    //                   type: "text",
-    //                   content: '亲爱的' + nickname + '~，你怎么这么晚才来？你知道自己错过了多少互联网大事吗！！！\n\n想要看看SK8科技能够为你做些什么。。。\n赶快回复“作品”，或点这里试试\n\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓\n↓↓↓\n↓↓↓\n↓↓\n↓↓\n↓↓\n↓'
-    //                 });
-    //               }
-    //             })
-    //       }
-    //     });
   }
 
 }).device_text(function(message, req, res, next) {
