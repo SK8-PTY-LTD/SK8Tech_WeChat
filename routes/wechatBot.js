@@ -102,7 +102,7 @@ function getAccessToken(callback) {
 }
 
 //get message from slack
-// function getMessageFromSlack() {
+function getMessageFromSlack(replyText) {
     // 1. 由slack发送信息至URL
     var incomingHook = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
     var options = "http://sk8tech.leanapp.cn/wechat";
@@ -119,13 +119,14 @@ function getAccessToken(callback) {
         });
 
         // res.json(reply);
-        console.log("slack message", req);
+        console.log("slack message", req.body.text);
+        replyText.success(req.body.text);
 
     });
 
-// }
+}
 
-// getMessageFromSlack();
+getMessageFromSlack();
 
 //收到文字消息
 router.use('/', wechat(config).text(function(message, req, res, next) {
