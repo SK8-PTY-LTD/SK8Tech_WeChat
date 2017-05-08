@@ -101,31 +101,6 @@ function getAccessToken(callback) {
       });
 }
 
-//get message from slack
-function getMessageFromSlack() {
-    // 1. 由slack发送信息至URL
-    var incomingHook = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
-    var options = "http://sk8tech.leanapp.cn/wechat";
-    var slack = new Slack(incomingHook, options);
-    router.post('/',function(req,res) {
-
-        var reply = slack.respond(req.body,function(hook) {
-
-            return {
-                text: 'Reply success , ' + hook.user_name,
-                username: 'Bot'
-            };
-
-        });
-
-        // res.json(reply);
-        console.log("slack message", req.body.text);
-
-    });
-
-}
-
-// getMessageFromSlack();
 
 //收到文字消息
 router.use('/', wechat(config).text(function(message, req, res, next) {
@@ -233,6 +208,60 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
                                   } else {
                                       console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
+                                      // 1. 由slack发送信息至URL
+                                      var incomingHook = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
+                                      var options = "http://sk8tech.leanapp.cn/wechat";
+                                      var slack = new Slack(incomingHook, options);
+                                      router.post('/',function(req,res) {
+
+                                          var reply = slack.respond(req.body,function(hook) {
+
+                                              return {
+                                                  text: 'Reply success , ' + hook.user_name,
+                                                  username: 'Bot'
+                                              };
+
+                                          });
+
+                                          // res.json(reply);
+                                          console.log("slack message", req.body.text);
+                                          //2. 信息发送至wechat
+                                          getAccessToken({
+                                              success: function(accessToken) {
+
+                                                  var messageRequestURL = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken;
+                                                  request.post({
+                                                          url: messageRequestURL,
+                                                          json: true,
+                                                          headers: {
+                                                              "content-type": "application/json"
+                                                          },
+                                                          body: {
+                                                              "touser": message.FromUserName,
+                                                              "msgtype":"text",
+                                                              "text":
+                                                              {
+                                                                  "content": req.body.text
+                                                              }
+                                                          }
+                                                      },
+                                                      function (err, httpResponse, body) {
+                                                          if (err != null) {
+                                                              console.log("发送至wechat EEEEEor ", err);
+                                                          } else {
+                                                              console.log("发送至wechat Success ");
+                                                          }
+                                                      })
+
+                                              },
+                                              error:function(error) {
+
+                                                  console.log("发送至wechat 失败 ", error);
+
+                                              }
+                                          });
+
+                                      });
 
                                   }
                               });
@@ -259,42 +288,16 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
      *
      * @see https://mp.weixin.qq.com/wiki/11/c88c270ae8935291626538f9c64bd123.html#.E5.AE.A2.E6.9C.8D.E6.8E.A5.E5.8F.A3-.E5.8F.91.E6.B6.88.E6.81.AF
      */
+    //get message from slack
+    // function getMessageFromSlack() {
+    //
+    //
+    // }
+
+    // getMessageFromSlack();
     // function sendMessageToWechat() {
-    //     //2. 信息发送至wechat
-    //     getAccessToken({
-    //         success: function(accessToken) {
     //
-    //             var messageRequestURL = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken;
-    //             request.post({
-    //                     url: messageRequestURL,
-    //                     json: true,
-    //                     headers: {
-    //                         "content-type": "application/json"
-    //                     },
-    //                     body: {
-    //                         "touser": message.FromUserName,
-    //                         "msgtype":"text",
-    //                         "text":
-    //                         {
-    //                             "content": reply.text
-    //                         }
-    //                     }
-    //                 },
-    //                 function (err, httpResponse, body) {
-    //                     if (err != null) {
-    //                         console.log("发送至wechat EEEEEor ", err);
-    //                     } else {
-    //                         console.log("发送至wechat Success ");
-    //                     }
-    //                 })
-    //
-    //         },
-    //         error:function(error) {
-    //
-    //             console.log("发送至wechat 失败 ", error);
-    //
-    //         }
-    //     });
+
     // }
 
 
