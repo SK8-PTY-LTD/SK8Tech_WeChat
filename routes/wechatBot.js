@@ -119,11 +119,10 @@ router.post('/',function(req,res) {
 
     // res.json(reply);
     console.log("slack message", req.body.text);
-
+    return req.body.text;
 });
-
 }
-getMessageFromSlack();
+
 
 //收到文字消息
 router.use('/', wechat(config).text(function(message, req, res, next) {
