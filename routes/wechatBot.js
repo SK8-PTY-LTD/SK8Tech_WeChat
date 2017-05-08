@@ -119,16 +119,7 @@ router.post('/',function(req,res) {
 
     // res.json(reply);
     console.log("slack message", req.body.text);
-    //2. 信息发送至wechat
 
-},function (err, httpResponse, body) {
-    if (err != null) {
-        console.log('slack message error:', err); // Print the error if one occurred
-        // replyMessage.error(err);
-    } else {
-        console.log('slack message success: ', httpResponse, body);
-        // replyMessage.success(req.body.text);
-    }
 });
 
 }
@@ -240,6 +231,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
                                   } else {
                                       console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
+                                      getMessageFromSlack();
 
                                   }
                               });
