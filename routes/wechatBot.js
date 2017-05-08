@@ -107,7 +107,7 @@ function getMessageFromSlack() {
     var incomingHook = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
     var options = "http://sk8tech.leanapp.cn/wechat";
     var slack = new Slack(incomingHook, options);
-    router.post('/yesman',function(req,res) {
+    router.post('/',function(req,res) {
 
         var reply = slack.respond(req.body,function(hook) {
 
