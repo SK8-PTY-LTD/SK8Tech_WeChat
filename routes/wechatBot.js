@@ -124,6 +124,15 @@ router.post('/slack/slash-commands/send-me-message',function(req,res) {
 }
 getMessageFromSlack();
 
+//
+function sendMessageToSlackResponseURL(responseURL, JSONmessage){
+    router.post('/slack/slash-commands/send-me-buttons',function(req,res) {
+
+        console.log("slack button", req);
+    });
+}
+sendMessageToSlackResponseURL();
+
 //收到文字消息
 router.use('/', wechat(config).text(function(message, req, res, next) {
   // message为文本内容
