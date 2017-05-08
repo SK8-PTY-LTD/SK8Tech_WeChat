@@ -19,7 +19,7 @@ var wechatReply = require('../settings/reply');
 
 // 引用 node-slack 库，详细请查看 https://github.com/xoxco/node-slack *注意:可能需要设置
 //@see 设置:https://github.com/xoxco/node-slack/blob/master/slack.js
-// var Slack = require('node-slack');
+var Slack = require('node-slack');
 
 
 // router.use('/', wechat(config, function (req, res, next) {
@@ -101,6 +101,30 @@ function getAccessToken(callback) {
       });
 }
 
+//get message from slack
+function getMessageFromSlack() {
+    // 1. 由slack发送信息至URL
+    var incomingHook = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
+    var slack = new Slack(incomingHook, options);
+    router.post('/yesman',function(req,res) {
+
+        var reply = slack.respond(req.body,function(hook) {
+
+            return {
+                text: 'Reply success , ' + hook.user_name,
+                username: 'Bot'
+            };
+
+        });
+        //message包
+        res.json(reply);
+        console.log("slack message", res.json(reply));
+
+    });
+
+}
+
+getMessageFromSlack();
 //收到文字消息
 router.use('/', wechat(config).text(function(message, req, res, next) {
   // message为文本内容
@@ -227,29 +251,13 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
     /**
      * 由slack发送信息至Wechat
      * @author Yitta
-     * 
+     *
      * @see https://github.com/xoxco/node-slack
      * @see 设置:https://github.com/xoxco/node-slack/blob/master/slack.js
      *
      * @see https://mp.weixin.qq.com/wiki/11/c88c270ae8935291626538f9c64bd123.html#.E5.AE.A2.E6.9C.8D.E6.8E.A5.E5.8F.A3-.E5.8F.91.E6.B6.88.E6.81.AF
      */
     // function sendMessageToWechat() {
-    //     // 1. 由slack发送信息至URL
-    //     var slack = new Slack(hook_url,options);
-    //     app.post('/yesman',function(req,res) {
-    //
-    //         var reply = slack.respond(req.body,function(hook) {
-    //
-    //             return {
-    //                 text: 'Good point, ' + hook.user_name,
-    //                 username: 'Bot'
-    //             };
-    //
-    //         });
-    //         //message包
-    //         res.json(reply);
-    //
-    //     });
     //     //2. 信息发送至wechat
     //     getAccessToken({
     //         success: function(accessToken) {
