@@ -125,7 +125,7 @@ function getMessageFromSlack() {
 
 }
 
-getMessageFromSlack();
+// getMessageFromSlack();
 
 //收到文字消息
 router.use('/', wechat(config).text(function(message, req, res, next) {
