@@ -104,24 +104,24 @@ function getAccessToken(callback) {
 //get message from slack
 // function getMessageFromSlack() {
     // 1. 由slack发送信息至URL
-    // var incomingHook = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
-    // var options = "http://sk8tech.leanapp.cn/wechat";
-    // var slack = new Slack(incomingHook, options);
-    // router.post('/',function(req,res) {
-    //
-    //     var reply = slack.respond(req.body,function(hook) {
-    //
-    //         return {
-    //             text: 'Reply success , ' + hook.user_name,
-    //             username: 'Bot'
-    //         };
-    //
-    //     });
-    //     //message包
-    //     res.json(reply);
-    //     console.log("slack message", req.text);
-    //
-    // });
+    var incomingHook = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
+    var options = "http://sk8tech.leanapp.cn/wechat";
+    var slack = new Slack(incomingHook, options);
+    router.post('/',function(req,res) {
+
+        var reply = slack.respond(req.body,function(hook) {
+
+            return {
+                text: 'Reply success , ' + hook.user_name,
+                username: 'Bot'
+            };
+
+        });
+
+        // res.json(reply);
+        console.log("slack message", req);
+
+    });
 
 // }
 
