@@ -100,7 +100,9 @@ function getAccessToken(callback) {
         }
       });
 }
-
+//获取slack发出的消息
+//可成功获取但存在和用户发消息之间的先后问题, 以及路由问题
+// (目前此位置可以实现实时接收到消息,但warning信息为:  请求超时: url=/wechat/slack/slash-commands/send-me-message, timeout=15000, 请确认方法执行耗时很长，或没有正确的 response 回调。)
 function getMessageFromSlack() {
 // 1. 由slack发送信息至URL
 var incomingHook = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
@@ -124,14 +126,12 @@ router.post('/slack/slash-commands/send-me-message',function(req,res) {
 }
 getMessageFromSlack();
 
-//
-function sendMessageToSlackResponseURL(responseURL, JSONmessage){
-    router.post('/slack/slash-commands/send-me-buttons',function(req,res) {
+//获取interactive button的信息
+//*待修改
+router.post('/slack/slash-commands/send-me-buttons',function(req,res) {
 
-        console.log("slack button", req);
-    });
-}
-sendMessageToSlackResponseURL();
+    console.log("slack button", req);
+});
 
 //收到文字消息
 router.use('/', wechat(config).text(function(message, req, res, next) {
@@ -285,6 +285,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
     //
     //     // res.json(reply);
     //     console.log("slack message", req.body.text);
+    //
     //     //2. 信息发送至wechat
     //     getAccessToken({
     //         success: function(accessToken) {
