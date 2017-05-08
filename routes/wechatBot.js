@@ -102,7 +102,7 @@ function getAccessToken(callback) {
 }
 
 //get message from slack
-function getMessageFromSlack(replyText) {
+function getMessageFromSlack() {
     // 1. 由slack发送信息至URL
     var incomingHook = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
     var options = "http://sk8tech.leanapp.cn/wechat";
@@ -120,7 +120,6 @@ function getMessageFromSlack(replyText) {
 
         // res.json(reply);
         console.log("slack message", req.body.text);
-        replyText.success(req.body.text);
 
     });
 
