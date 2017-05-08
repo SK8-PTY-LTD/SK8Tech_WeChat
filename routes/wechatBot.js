@@ -119,7 +119,7 @@ router.post('/slack/slash-commands/send-me-message',function(req,res) {
 
     });
 
-    // res.json(reply);
+    res.json(reply);
     console.log("slack message", req.body.text);
     return req.body.text;
 });
@@ -131,6 +131,8 @@ getMessageFromSlack();
 router.post('/slack/slash-commands/send-me-buttons',function(req,res) {
 
     console.log("slack button", req);
+
+    res.success();
 });
 
 //收到文字消息
