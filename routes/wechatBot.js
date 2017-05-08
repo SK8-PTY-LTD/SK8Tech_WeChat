@@ -105,6 +105,7 @@ function getAccessToken(callback) {
 function getMessageFromSlack() {
     // 1. 由slack发送信息至URL
     var incomingHook = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
+    var options = "http://sk8tech.leanapp.cn/wechat";
     var slack = new Slack(incomingHook, options);
     router.post('/yesman',function(req,res) {
 
@@ -125,6 +126,7 @@ function getMessageFromSlack() {
 }
 
 getMessageFromSlack();
+
 //收到文字消息
 router.use('/', wechat(config).text(function(message, req, res, next) {
   // message为文本内容
