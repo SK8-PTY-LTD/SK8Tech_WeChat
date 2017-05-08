@@ -122,7 +122,7 @@ router.post('/slack/slash-commands/send-me-message',function(req,res) {
     return req.body.text;
 });
 }
-
+getMessageFromSlack();
 
 //收到文字消息
 router.use('/', wechat(config).text(function(message, req, res, next) {
@@ -230,7 +230,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
                                   } else {
                                       console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
-                                      getMessageFromSlack();
+
 
                                   }
                               });
