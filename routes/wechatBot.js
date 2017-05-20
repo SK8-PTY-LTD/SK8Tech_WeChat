@@ -152,9 +152,7 @@ router.post('/slack/slash-commands/send-me-buttons', urlencodedParser, function(
     res.status(200).end() // best practice to respond with empty 200 status code
 var reqBody = req.body
 var responseURL = reqBody.response_url
-if (reqBody.token != YOUR_APP_VERIFICATION_TOKEN){
-    res.status(403).end("Access forbidden")
-}else{
+
     var message = {
         "text": "This is your first interactive message",
         "attachments": [
@@ -189,7 +187,7 @@ if (reqBody.token != YOUR_APP_VERIFICATION_TOKEN){
         ]
     }
     sendMessageToSlackResponseURL(responseURL, message)
-}
+
 });
 
 router.post('/slack/actions', urlencodedParser, function (req, res) {
