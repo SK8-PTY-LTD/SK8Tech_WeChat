@@ -119,9 +119,9 @@ router.post('/slack/slash-commands/send-me-message',function(req,res) {
 
     });
 
-    res.json(reply);
+    // res.json(reply);
     console.log("slack message", req.body.text);
-    return req.body.text;
+    // return req.body.text;
 });
 }
 getMessageFromSlack();
