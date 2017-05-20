@@ -104,7 +104,7 @@ function getAccessToken(callback) {
 }
 //获取slack发出的消息
 //可成功获取但存在和用户发消息之间的先后问题, 以及路由问题
-// (目前此位置可以实现实时接收到消息,但warning信息为:  请求超时: url=/wechat/slack/slash-commands/send-me-message, timeout=15000, 请确认方法执行耗时很长，或没有正确的 response 回调。)
+// (目前此位置可以实现实时接收到消息,但warning信息为: 回调次数太多。)
 function getMessageFromSlack() {
 // 1. 由slack发送信息至URL
     var incomingHook = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
@@ -129,7 +129,7 @@ function getMessageFromSlack() {
 }
 getMessageFromSlack();
 
-// //获取interactive button的信息
+//获取interactive button的信息
 function sendMessageToSlackResponseURL(responseURL, JSONmessage) {
     var postOptions = {
         uri: responseURL,
@@ -148,48 +148,6 @@ function sendMessageToSlackResponseURL(responseURL, JSONmessage) {
     });
 }
 
-router.post('/slack/slash-commands/send-me-buttons', urlencodedParser, function (req, res) {
-    res.status(200).end() // best practice to respond with empty 200 status code
-    var reqBody = req.body
-    var responseURL = reqBody.response_url
-
-    var message = {
-        "text": "This is your first interactive message",
-        "attachments": [
-            {
-                "text": "Building buttons is easy right?",
-                "fallback": "Shame... buttons aren't supported in this land",
-                "callback_id": "button_tutorial",
-                "color": "#3AA3E3",
-                "attachment_type": "default",
-                "actions": [
-                    {
-                        "name": "yes",
-                        "text": "yes",
-                        "type": "button",
-                        "value": "yes"
-                    },
-                    {
-                        "name": "no",
-                        "text": "no",
-                        "type": "button",
-                        "value": "no"
-                    },
-                    {
-                        "name": "maybe",
-                        "text": "maybe",
-                        "type": "button",
-                        "value": "maybe",
-                        "style": "danger"
-                    }
-                ]
-            }
-        ]
-    }
-    sendMessageToSlackResponseURL(responseURL, message)
-
-});
-
 router.post('/slack/actions', urlencodedParser, function(req, res){
     res.status(200).end() // best practice to respond with 200 status
     var actionJSONPayload = JSON.parse(req.body.payload) // parse URL-encoded payload JSON string
@@ -198,15 +156,50 @@ router.post('/slack/actions', urlencodedParser, function(req, res){
       "replace_original": false
     }
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, message)
+    //get openid
+    //需要 异步收取reply信息
     console.log('button message: to user(ID): ', actionJSONPayload.actions[0].value)
+
+    //     getAccessToken({
+    //         success: function(accessToken) {
+    //
+    //             var messageRequestURL = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken;
+    //             request.post({
+    //                     url: messageRequestURL,
+    //                     json: true,
+    //                     headers: {
+    //                         "content-type": "application/json"
+    //                     },
+    //                     body: {
+    //                         "touser": actionJSONPayload.actions[0].value,
+    //                         "msgtype":"text",
+    //                         "text":
+    //                         {
+    //                             "content": req.body.text
+    //                         }
+    //                     }
+    //                 },
+    //                 function (err, httpResponse, body) {
+    //                     if (err != null) {
+    //                         console.log("发送至wechat EEEEEor ", err);
+    //                     } else {
+    //                         console.log("发送至wechat Success ");
+    //                     }
+    //                 })
+    //
+    //         },
+    //         error:function(error) {
+    //
+    //             console.log("发送至wechat 失败 ", error);
+    //
+    //         }
+    //     });
+    //
+    // });
+    //
+    // }
 })
 
-// router.post('/slack/actions',function(req,res) {
-//
-//     console.log("slack button", req);
-//
-//     res.success();
-// });
 
 //收到文字消息
 router.use('/', wechat(config).text(function (message, req, res, next) {
@@ -227,6 +220,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
             var reply = wechatReply.keywords[keyword].reply;
             res.reply(reply);
         }
+        //else 会出错
     }
 
     /**
