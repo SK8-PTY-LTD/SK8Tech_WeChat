@@ -129,12 +129,40 @@ getMessageFromSlack();
 
 //获取interactive button的信息
 //*待修改
-router.post('/slack/slash-commands/send-me-buttons',function(req,res) {
 
-    console.log("slack button", req);
+function sendMessageToSlackResponseURL(responseURL, JSONmessage){
+    var postOptions = {
+        uri: responseURL,
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        json: JSONmessage
+    }
+    request(postOptions, function(error, response, body) {
+        if (error){
+            // handle errors as you see fit
+            console.log('send message error', error);
+        }
+        else console.log('send message success', body);
+    });
+}
 
-    res.success();
+router.post('/slack/actions', function (req, res) {
+    res.status(200).end() // best practice to respond with 200 status
+var actionJSONPayload = JSON.parse(req.body.payload) // parse URL-encoded payload JSON string
+var message = {
+    "text": actionJSONPayload.user.name+" clicked: "+actionJSONPayload.actions[0].value,
+    "replace_original": false
+}
+sendMessageToSlackResponseURL(actionJSONPayload.response_url, message)
 });
+// router.post('/slack/actions',function(req,res) {
+//
+//     console.log("slack button", req);
+//
+//     res.success();
+// });
 
 //收到文字消息
 router.use('/', wechat(config).text(function(message, req, res, next) {
