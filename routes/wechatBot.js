@@ -184,9 +184,6 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
     }else {
         res.reply('好咧亲~小编速速就来~');
     }
-      else {
-        res.reply('好咧亲~小编速速就来~');
-    }
   }
 
  /**
