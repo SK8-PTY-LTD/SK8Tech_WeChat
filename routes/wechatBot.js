@@ -190,16 +190,16 @@ var responseURL = reqBody.response_url
 
 });
 
-router.post('/slack/actions', urlencodedParser, function (req, res) {
-        res.status(200).end(); // best practice to respond with 200 status
-        var actionJSONPayload = JSON.parse(req.body.payload); // parse URL-encoded payload JSON string
-        var message = {
-            "text": actionJSONPayload.user.name+" clicked: "+actionJSONPayload.actions[0].value,
-            "replace_original": false
-        }
-    console.log('success', message.text);
-    sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
-});
+router.post('/slack/actions', urlencodedParser, function(req, res){
+    res.status(200).end() // best practice to respond with 200 status
+var actionJSONPayload = JSON.parse(req.body.payload) // parse URL-encoded payload JSON string
+var message = {
+    "text": actionJSONPayload.user.name+" clicked: "+actionJSONPayload.actions[0].name,
+    "replace_original": false
+}
+sendMessageToSlackResponseURL(actionJSONPayload.response_url, message)
+    console.log('message content:', message);
+})
 
 // router.post('/slack/actions',function(req,res) {
 //
