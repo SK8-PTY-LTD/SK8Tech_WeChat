@@ -154,37 +154,28 @@ router.post('/slack/slash-commands/send-me-buttons', urlencodedParser, function 
     var responseURL = reqBody.response_url
 
     var message = {
-        "text": "This is your first interactive message",
-        "attachments": [
-            {
-                "text": "Building buttons is easy right?",
-                "fallback": "Shame... buttons aren't supported in this land",
-                "callback_id": "button_tutorial",
-                "color": "#3AA3E3",
-                "attachment_type": "default",
-                "actions": [
-                    {
-                        "name": "yes",
-                        "text": "yes",
-                        "type": "button",
-                        "value": "yes"
-                    },
-                    {
-                        "name": "no",
-                        "text": "no",
-                        "type": "button",
-                        "value": "no"
-                    },
-                    {
-                        "name": "maybe",
-                        "text": "maybe",
-                        "type": "button",
-                        "value": "maybe",
-                        "style": "danger"
-                    }
-                ]
-            }
-        ]
+        "text": "新消息：",
+        "attachments": [{
+            "title": "Jack",
+            "title_link": "https://mp.weixin.qq.com/",
+            "text": message.Content,
+            "thumbnail_url": "profileImageURL",
+            "fields": [{
+                "title": "Gender",
+                "value": "男",
+                "short": true
+            }, {
+                "title": "Location",
+                "value": "NSW",
+                "short": true
+            }],
+            "actions": [{
+                "name": "reply",
+                "text": "回复(待开发)",
+                "type": "button",
+                "value": "reply"
+            }]
+        }]
     }
     sendMessageToSlackResponseURL(responseURL, message)
 
