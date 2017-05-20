@@ -153,7 +153,7 @@ router.post('/slack/actions', function (req, res) {
         "replace_original": false
     }
     console.log('success', message.text);
-    res.status(200).end() // best practice to respond with 200 status
+    // res.status(200).end() // best practice to respond with 200 status
 });
 // router.post('/slack/actions',function(req,res) {
 //
