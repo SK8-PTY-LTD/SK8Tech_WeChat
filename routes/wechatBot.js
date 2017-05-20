@@ -148,47 +148,7 @@ function sendMessageToSlackResponseURL(responseURL, JSONmessage){
             });
     }
 
-router.post('/slack/slash-commands/send-me-buttons', urlencodedParser, function(req, res){
-    res.status(200).end() // best practice to respond with empty 200 status code
-var reqBody = req.body
-var responseURL = reqBody.response_url
 
-    var message = {
-        "text": "This is your first interactive message",
-        "attachments": [
-            {
-                "text": "Building buttons is easy right?",
-                "fallback": "Shame... buttons aren't supported in this land",
-                "callback_id": "button_tutorial",
-                "color": "#3AA3E3",
-                "attachment_type": "default",
-                "actions": [
-                    {
-                        "name": "yes",
-                        "text": "yes",
-                        "type": "button",
-                        "value": "yes"
-                    },
-                    {
-                        "name": "no",
-                        "text": "no",
-                        "type": "button",
-                        "value": "no"
-                    },
-                    {
-                        "name": "maybe",
-                        "text": "maybe",
-                        "type": "button",
-                        "value": "maybe",
-                        "style": "danger"
-                    }
-                ]
-            }
-        ]
-    }
-    sendMessageToSlackResponseURL(responseURL, message)
-
-});
 
 router.post('/slack/actions', urlencodedParser, function(req, res){
     res.status(200).end() // best practice to respond with 200 status
@@ -277,47 +237,47 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                           // @see https://www.npmjs.com/package/request
                           // @see https://api.slack.com/incoming-webhooks#sending_messages
                           var slackWebhookMarketing = "https://hooks.slack.com/services/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";
-                          request.post({
-                                  url: slackWebhookMarketing,
-                                  json: true,
-                                  headers: {
-                                      "Content-Type": "application/json"
-                                  },
-                                  body: {
-                                      "text": "新消息：",
-                                      "attachments": [{
-                                          "title": nickname,
-                                          "title_link": "https://mp.weixin.qq.com/",
-                                          "text": message.Content,
-                                          "thumbnail_url": "profileImageURL",
-                                          "fields": [{
-                                              "title": "Gender",
-                                              "value": sex,
-                                              "short": true
-                                          }, {
-                                              "title": "Location",
-                                              "value": province,
-                                              "short": true
-                                          }],
-                                          "actions": [{
-                                              "name": "reply",
-                                              "text": "回复(待开发)",
-                                              "type": "button",
-                                              "value": "reply"
-                                          }]
-                                      }]
-                                  }
-                              },
-                              function (err, httpResponse, body) { /* ... */
-                                  if (err != null) {
-                                      console.log('Slack error:', err); // Print the error if one occurred
+                          request.post('/slack/slash-commands/send-me-buttons', urlencodedParser, function(req, res){
+                              res.status(200).end() // best practice to respond with empty 200 status code
+                              var reqBody = req.body
+                              var responseURL = slackWebhookMarketing
 
-                                  } else {
-                                      console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
+                              var message = {
+                                  "text": "This is your first interactive message",
+                                  "attachments": [
+                                      {
+                                          "text": "Building buttons is easy right?",
+                                          "fallback": "Shame... buttons aren't supported in this land",
+                                          "callback_id": "button_tutorial",
+                                          "color": "#3AA3E3",
+                                          "attachment_type": "default",
+                                          "actions": [
+                                              {
+                                                  "name": "yes",
+                                                  "text": "yes",
+                                                  "type": "button",
+                                                  "value": "yes"
+                                              },
+                                              {
+                                                  "name": "no",
+                                                  "text": "no",
+                                                  "type": "button",
+                                                  "value": "no"
+                                              },
+                                              {
+                                                  "name": "maybe",
+                                                  "text": "maybe",
+                                                  "type": "button",
+                                                  "value": "maybe",
+                                                  "style": "danger"
+                                              }
+                                          ]
+                                      }
+                                  ]
+                              }
+                              sendMessageToSlackResponseURL(responseURL, message)
 
-
-                                  }
-                              });
+                          });
 
                       }
                   });
