@@ -158,8 +158,8 @@ router.post('/slack/slash-commands/send-me-buttons', urlencodedParser, function 
         "attachments": [{
             "title": "Jack",
             "title_link": "https://mp.weixin.qq.com/",
-            "text": message.Content,
-            "thumbnail_url": "profileImageURL",
+            "text": "你好",
+           
             "fields": [{
                 "title": "Gender",
                 "value": "男",
