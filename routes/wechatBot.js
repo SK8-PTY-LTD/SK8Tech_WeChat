@@ -190,15 +190,15 @@ router.post('/slack/slash-commands/send-me-buttons', urlencodedParser, function 
 
 });
 
-router.post('/slack/actions', urlencodedParser, function (req, res) {
+router.post('/slack/actions', urlencodedParser, function(req, res){
     res.status(200).end() // best practice to respond with 200 status
     var actionJSONPayload = JSON.parse(req.body.payload) // parse URL-encoded payload JSON string
     var message = {
-        "text": actionJSONPayload.user.name + " clicked: " + actionJSONPayload.actions[0].name,
-        "replace_original": false
+      "text": actionJSONPayload.user.name+" clicked: "+actionJSONPayload.actions[0].name,
+      "replace_original": false
     }
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, message)
-    console.log('message content:', message);
+    console.log('button message', message)
 })
 
 // router.post('/slack/actions',function(req,res) {
