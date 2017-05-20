@@ -21,6 +21,8 @@ var wechatReply = require('../settings/reply');
 //@see 设置:https://github.com/xoxco/node-slack/blob/master/slack.js
 var Slack = require('node-slack');
 
+var bodyParser = require('body-parser');
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 // router.use('/', wechat(config, function (req, res, next) {
 //   // 微信输入信息都在req.weixin上
@@ -146,7 +148,7 @@ function sendMessageToSlackResponseURL(responseURL, JSONmessage){
             });
     }
 
-router.post('/slack/actions', function (req, res) {
+router.post('/slack/actions', urlencodedParser, function (req, res) {
         res.status(200).end(); // best practice to respond with 200 status
         var actionJSONPayload = JSON.parse(req.body.payload); // parse URL-encoded payload JSON string
         var message = {
