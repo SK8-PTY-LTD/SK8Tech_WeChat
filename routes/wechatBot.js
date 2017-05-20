@@ -271,6 +271,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
                             var province = body.province;
                             var country = body.country;
                             var profileImageURL = body.headimgurl;
+                            var openID = body.openid;
 
                             // Send text information to Slack
                             // @author Jack
@@ -284,32 +285,22 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
                                         "Content-Type": "application/json"
                                     },
                                     body: {
-                                        "text": "This is your first interactive message",
+                                        "text": "新消息：",
                                         "attachments": [
                                             {
-                                                "text": "Building buttons is easy right?",
+                                                "title": nickname + province,
+                                                "title_link": "https://mp.weixin.qq.com/",
+                                                "text": message.Content,
                                                 "fallback": "Shame... buttons aren't supported in this land",
                                                 "callback_id": "button_tutorial",
                                                 "color": "#3AA3E3",
                                                 "attachment_type": "default",
                                                 "actions": [
                                                     {
-                                                        "name": "yes",
-                                                        "text": "yes",
+                                                        "name": "reply",
+                                                        "text": "reply",
                                                         "type": "button",
-                                                        "value": "yes"
-                                                    },
-                                                    {
-                                                        "name": "no",
-                                                        "text": "no",
-                                                        "type": "button",
-                                                        "value": "no"
-                                                    },
-                                                    {
-                                                        "name": "maybe",
-                                                        "text": "maybe",
-                                                        "type": "button",
-                                                        "value": "maybe",
+                                                        "value": openID,
                                                         "style": "danger"
                                                     }
                                                 ]
