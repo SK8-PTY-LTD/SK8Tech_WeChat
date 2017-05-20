@@ -21,9 +21,6 @@ var wechatReply = require('../settings/reply');
 //@see 设置:https://github.com/xoxco/node-slack/blob/master/slack.js
 var Slack = require('node-slack');
 
-//@see https://api.slack.com/tutorials/intro-to-message-buttons
-// var bodyParser = require('body-parser');
-// var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 // router.use('/', wechat(config, function (req, res, next) {
 //   // 微信输入信息都在req.weixin上
@@ -139,7 +136,7 @@ function sendMessageToSlackResponseURL(responseURL, JSONmessage){
             'Content-type': 'application/json'
         },
         json: JSONmessage
-    };
+    }
     request(postOptions, function(error, response, body) {
         if (error){
             // handle errors as you see fit
@@ -150,12 +147,12 @@ function sendMessageToSlackResponseURL(responseURL, JSONmessage){
 }
 
 router.post('/slack/actions', function (req, res) {
-    res.status(200).end(); // best practice to respond with 200 status
-var actionJSONPayload = JSON.parse(req.body.payload); // parse URL-encoded payload JSON string
+    res.status(200).end() // best practice to respond with 200 status
+var actionJSONPayload = JSON.parse(req.body.payload) // parse URL-encoded payload JSON string
 var message = {
     "text": actionJSONPayload.user.name+" clicked: "+actionJSONPayload.actions[0].value,
     "replace_original": false
-};
+}
 sendMessageToSlackResponseURL(actionJSONPayload.response_url, message)
 });
 // router.post('/slack/actions',function(req,res) {
