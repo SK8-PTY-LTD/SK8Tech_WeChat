@@ -17,10 +17,13 @@ var wechatMenu = require('../settings/menu');
 var wechatReply = require('../settings/reply');
 
 
-// 引用 node-slack 库，详细请查看 https://github.com/xoxco/node-slack *注意:可能需要设置
+// 引用 node-slack 库，详细请查看 https://github.com/xoxco/node-slack
 //@see 设置:https://github.com/xoxco/node-slack/blob/master/slack.js
 var Slack = require('node-slack');
 
+//@see https://api.slack.com/tutorials/intro-to-message-buttons
+var bodyParser = require('body-parser');
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 // router.use('/', wechat(config, function (req, res, next) {
 //   // 微信输入信息都在req.weixin上
@@ -128,8 +131,6 @@ router.post('/slack/slash-commands/send-me-message',function(req,res) {
 getMessageFromSlack();
 
 //获取interactive button的信息
-//*待修改
-
 function sendMessageToSlackResponseURL(responseURL, JSONmessage){
     var postOptions = {
         uri: responseURL,
@@ -138,7 +139,7 @@ function sendMessageToSlackResponseURL(responseURL, JSONmessage){
             'Content-type': 'application/json'
         },
         json: JSONmessage
-    }
+    };
     request(postOptions, function(error, response, body) {
         if (error){
             // handle errors as you see fit
@@ -148,13 +149,13 @@ function sendMessageToSlackResponseURL(responseURL, JSONmessage){
     });
 }
 
-router.post('/slack/actions', function (req, res) {
-    res.status(200).end() // best practice to respond with 200 status
-var actionJSONPayload = JSON.parse(req.body.payload) // parse URL-encoded payload JSON string
+router.post('/slack/actions', urlencodedParser, function (req, res) {
+    res.status(200).end(); // best practice to respond with 200 status
+var actionJSONPayload = JSON.parse(req.body.payload); // parse URL-encoded payload JSON string
 var message = {
     "text": actionJSONPayload.user.name+" clicked: "+actionJSONPayload.actions[0].value,
     "replace_original": false
-}
+};
 sendMessageToSlackResponseURL(actionJSONPayload.response_url, message)
 });
 // router.post('/slack/actions',function(req,res) {
@@ -182,6 +183,9 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
       var reply = wechatReply.keywords[keyword].reply;
       res.reply(reply);
+    }
+      else {
+        res.reply('好咧亲~小编速速就来~');
     }
   }
 
