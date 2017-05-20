@@ -154,6 +154,7 @@ var message = {
     "replace_original": false
 }
 sendMessageToSlackResponseURL(actionJSONPayload.response_url, message)
+    console.log('success', message.text);
 });
 // router.post('/slack/actions',function(req,res) {
 //
@@ -180,6 +181,8 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
       var reply = wechatReply.keywords[keyword].reply;
       res.reply(reply);
+    }else {
+        res.reply('好咧亲~小编速速就来~');
     }
       else {
         res.reply('好咧亲~小编速速就来~');
