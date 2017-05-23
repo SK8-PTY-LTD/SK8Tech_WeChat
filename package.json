@@ -25,6 +25,7 @@
     "node-slack": "0.0.7",
     "request": "^2.69.0",
     "strformat": "0.0.7",
+    "phantomjs": "2.1.7",
     "wechat": "^2.0.3",
     "wechat-api": "^1.24.0"
   }
