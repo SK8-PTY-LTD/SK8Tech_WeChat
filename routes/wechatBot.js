@@ -288,9 +288,10 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                                         "title": nickname + province,
                                         "title_link": "https://mp.weixin.qq.com/",
                                         "text": message.Content,
+                                        "thumbnail_url": "profileImageURL",
                                         "fallback": "Shame... buttons aren't supported in this land",
                                         "callback_id": "button_tutorial",
-                                        "color": "#3AA3E3",
+                                        "color": "#171c61",
                                         "attachment_type": "default",
                                         "actions": [{
                                             "name": "reply",
