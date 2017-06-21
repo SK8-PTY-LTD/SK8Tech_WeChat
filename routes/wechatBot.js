@@ -221,83 +221,101 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
             res.reply(reply);
         } else {
 
-            // 获取微信用户信息
-            // @author Jack
-            // @see https://mp.weixin.qq.com/wiki/14/bb5031008f1494a59c6f71fa0f319c66.html
-            var userRequestURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + accessToken + "&openid=" + message.FromUserName;
-            // console.log("userRequestURL", userRequestURL);
-            request.get({
-                    url: userRequestURL,
-                    json: true,
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                },
-                function(err, httpResponse, body) {
-                    if (err != null) {
-                        console.log('用户数据 error:', err); // Print the error if one occurred
-                    } else {
-                        console.log('用户数据 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
-                        console.log('用户数据 body:', body);
+            /**
+             * 转发消息至slack
+             *
+             * @author Jack
+             */
+            function sendMessageToSlack() {
+                getAccessToken({
+                    success: function(accessToken) {
 
-                        var nickname = body.nickname;
-                        var sex = body.sex;
-                        if (sex == 0) {
-                            sex = "未"
-                        } else if (sex == 1) {
-                            sex = "男"
-                        } else if (sex == 2) {
-                            sex = "女"
-                        }
-                        var language = body.language;
-                        var city = body.city;
-                        var province = body.province;
-                        var country = body.country;
-                        var profileImageURL = body.headimgurl;
-                        var openID = body.openid;
-
-                        // Send text information to Slack
+                        // 获取微信用户信息
                         // @author Jack
-                        // @see https://www.npmjs.com/package/request
-                        // @see https://api.slack.com/incoming-webhooks#sending_messages
-                        var slackWebhookMarketing = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
-                        request.post({
-                                url: slackWebhookMarketing,
+                        // @see https://mp.weixin.qq.com/wiki/14/bb5031008f1494a59c6f71fa0f319c66.html
+                        var userRequestURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + accessToken + "&openid=" + message.FromUserName;
+                        // console.log("userRequestURL", userRequestURL);
+                        request.get({
+                                url: userRequestURL,
                                 json: true,
                                 headers: {
                                     "Content-Type": "application/json"
-                                },
-                                body: {
-                                    "text": "新消息：",
-                                    "attachments": [{
-                                        "title": nickname + province,
-                                        "title_link": "https://mp.weixin.qq.com/",
-                                        "text": "新关键词: " + message.Content,
-                                        "fallback": "Shame... buttons aren't supported in this land",
-                                        "callback_id": "button_tutorial",
-                                        "color": "#3AA3E3",
-                                        "attachment_type": "default",
-                                        "actions": [{
-                                            "name": "reply",
-                                            "text": "reply",
-                                            "type": "button",
-                                            "value": openID,
-                                            "style": "danger"
-                                        }]
-                                    }]
                                 }
                             },
-                            function(err, httpResponse, body) { /* ... */
+                            function(err, httpResponse, body) {
                                 if (err != null) {
-                                    console.log('Slack error:', err); // Print the error if one occurred
-
+                                    console.log('用户数据 error:', err); // Print the error if one occurred
                                 } else {
-                                    console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
+                                    console.log('用户数据 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
+                                    console.log('用户数据 body:', body);
+
+                                    var nickname = body.nickname;
+                                    var sex = body.sex;
+                                    if (sex == 0) {
+                                        sex = "未"
+                                    } else if (sex == 1) {
+                                        sex = "男"
+                                    } else if (sex == 2) {
+                                        sex = "女"
+                                    }
+                                    var language = body.language;
+                                    var city = body.city;
+                                    var province = body.province;
+                                    var country = body.country;
+                                    var profileImageURL = body.headimgurl;
+                                    var openID = body.openid;
+
+                                    // Send text information to Slack
+                                    // @author Jack
+                                    // @see https://www.npmjs.com/package/request
+                                    // @see https://api.slack.com/incoming-webhooks#sending_messages
+                                    var slackWebhookMarketing = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
+                                    request.post({
+                                            url: slackWebhookMarketing,
+                                            json: true,
+                                            headers: {
+                                                "Content-Type": "application/json"
+                                            },
+                                            body: {
+                                                "text": "新消息：",
+                                                "attachments": [{
+                                                    "title": nickname + province,
+                                                    "title_link": "https://mp.weixin.qq.com/",
+                                                    "text": "新关键词: " + message.Content,
+                                                    "fallback": "Shame... buttons aren't supported in this land",
+                                                    "callback_id": "button_tutorial",
+                                                    "color": "#3AA3E3",
+                                                    "attachment_type": "default",
+                                                    "actions": [{
+                                                        "name": "reply",
+                                                        "text": "reply",
+                                                        "type": "button",
+                                                        "value": openID,
+                                                        "style": "danger"
+                                                    }]
+                                                }]
+                                            }
+                                        },
+                                        function(err, httpResponse, body) { /* ... */
+                                            if (err != null) {
+                                                console.log('Slack error:', err); // Print the error if one occurred
+
+                                            } else {
+                                                console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
+                                            }
+                                        });
+
                                 }
                             });
 
+                    },
+                    error: function(error) {
+
+                        console.log("信息转发 EEEEEor ", error);
+
                     }
                 });
+            }
 
             res.reply("得嘞！小编速速就来！");
         }
