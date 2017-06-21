@@ -260,7 +260,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                         // @author Jack
                         // @see https://www.npmjs.com/package/request
                         // @see https://api.slack.com/incoming-webhooks#sending_messages
-                        var slackWebhookMarketing = process.env.slackWebhookMarketing;
+                        var slackWebhookMarketing = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
                         request.post({
                                 url: slackWebhookMarketing,
                                 json: true,
@@ -351,7 +351,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                             // @author Jack
                             // @see https://www.npmjs.com/package/request
                             // @see https://api.slack.com/incoming-webhooks#sending_messages
-                            var slackWebhookMarketing = process.env.slackWebhookMarketing;
+                            var slackWebhookMarketing = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
                             request.post({
                                     url: slackWebhookMarketing,
                                     json: true,
