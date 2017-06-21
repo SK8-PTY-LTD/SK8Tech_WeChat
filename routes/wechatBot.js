@@ -58,7 +58,7 @@ function updateMenu() {
                 },
                 function(err, httpResponse, body) {
                     if (err != null) {
-                        console.log("菜单 EEEEEor ", err);
+                        console.log("菜单 Error ", err);
                     } else {
                         console.log("菜单 Success ");
                     }
@@ -220,7 +220,6 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
             var reply = wechatReply.keywords[keyword].reply;
             res.reply(reply);
         } else {
-            res.reply("得嘞！小编速速就来！");
 
             // 获取微信用户信息
             // @author Jack
@@ -261,7 +260,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                         // @author Jack
                         // @see https://www.npmjs.com/package/request
                         // @see https://api.slack.com/incoming-webhooks#sending_messages
-                        var slackWebhookMarketing = "https://hooks.slack.com/services/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";
+                        var slackWebhookMarketing = process.env.slackWebhookMarketing;
                         request.post({
                                 url: slackWebhookMarketing,
                                 json: true,
@@ -294,13 +293,13 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
                                 } else {
                                     console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
-
-
                                 }
                             });
 
                     }
                 });
+
+            res.reply("得嘞！小编速速就来！");
         }
     }
 
@@ -352,7 +351,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                             // @author Jack
                             // @see https://www.npmjs.com/package/request
                             // @see https://api.slack.com/incoming-webhooks#sending_messages
-                            var slackWebhookMarketing = "https://hooks.slack.com/services/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";
+                            var slackWebhookMarketing = process.env.slackWebhookMarketing;
                             request.post({
                                     url: slackWebhookMarketing,
                                     json: true,
