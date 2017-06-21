@@ -22,7 +22,9 @@ var wechatReply = require('../settings/reply');
 var Slack = require('node-slack');
 
 var bodyParser = require('body-parser');
-var urlencodedParser = bodyParser.urlencoded({extended: false});
+var urlencodedParser = bodyParser.urlencoded({
+    extended: false
+});
 
 // router.use('/', wechat(config, function (req, res, next) {
 //   // 微信输入信息都在req.weixin上
@@ -40,7 +42,7 @@ function updateMenu() {
 
     //1. Get Access token
     getAccessToken({
-        success: function (accessToken) {
+        success: function(accessToken) {
 
             //2. 创建表单并发送
             var menuRequestURL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + accessToken;
@@ -54,7 +56,7 @@ function updateMenu() {
                         "button": wechatMenu.buttons
                     }
                 },
-                function (err, httpResponse, body) {
+                function(err, httpResponse, body) {
                     if (err != null) {
                         console.log("菜单 EEEEEor ", err);
                     } else {
@@ -63,7 +65,7 @@ function updateMenu() {
                 })
 
         },
-        error: function (error) {
+        error: function(error) {
 
             console.log("菜单更新 EEEEEor ", error);
 
@@ -92,7 +94,7 @@ function getAccessToken(callback) {
                 "Content-Type": "application/json"
             }
         },
-        function (err, httpResponse, body) {
+        function(err, httpResponse, body) {
             if (err != null) {
                 console.log('公众号授权 error:', err); // Print the error if one occurred
                 callback.error(err);
@@ -106,13 +108,13 @@ function getAccessToken(callback) {
 //可成功获取但存在和用户发消息之间的先后问题, 以及路由问题
 // (目前此位置可以实现实时接收到消息,但warning信息为: 回调次数太多。)
 function getMessageFromSlack() {
-// 1. 由slack发送信息至URL
+    // 1. 由slack发送信息至URL
     var incomingHook = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
     var options = "http://sk8tech.leanapp.cn/wechat";
     var slack = new Slack(incomingHook, options);
-    router.post('/slack/slash-commands/send-me-message', function (req, res) {
+    router.post('/slack/slash-commands/send-me-message', function(req, res) {
 
-        var reply = slack.respond(req.body, function (hook) {
+        var reply = slack.respond(req.body, function(hook) {
 
             return {
                 text: 'Reply success , ' + hook.user_name,
@@ -139,25 +141,24 @@ function sendMessageToSlackResponseURL(responseURL, JSONmessage) {
         },
         json: JSONmessage
     }
-    request(postOptions, function (error, response, body) {
+    request(postOptions, function(error, response, body) {
         if (error) {
             // handle errors as you see fit
             console.log('send message error', error);
-        }
-        else console.log('send message success', body);
+        } else console.log('send message success', body);
     });
 }
 
-router.post('/slack/actions', urlencodedParser, function(req, res){
+router.post('/slack/actions', urlencodedParser, function(req, res) {
     res.status(200).end() // best practice to respond with 200 status
     var actionJSONPayload = JSON.parse(req.body.payload) // parse URL-encoded payload JSON string
     var message = {
-      "text": actionJSONPayload.user.name+" replied user(ID): "+actionJSONPayload.actions[0].value,
-      "replace_original": false
+        "text": actionJSONPayload.user.name + " replied user(ID): " + actionJSONPayload.actions[0].value,
+        "replace_original": false
     }
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, message)
-    //get openid
-    //需要 异步收取reply信息
+        //get openid
+        //需要 异步收取reply信息
     console.log('button message: to user(ID): ', actionJSONPayload.actions[0].value)
 
     //     getAccessToken({
@@ -202,7 +203,7 @@ router.post('/slack/actions', urlencodedParser, function(req, res){
 
 
 //收到文字消息
-router.use('/', wechat(config).text(function (message, req, res, next) {
+router.use('/', wechat(config).text(function(message, req, res, next) {
     // message为文本内容
     // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
     // CreateTime: '1359125035',
@@ -211,16 +212,96 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
     // MsgId: '5837397576500011341' }
     console.log("收到文字消息 ", message.Content);
 
-//关键词自动回复
+    //关键词自动回复
     var keyword;
 
     for (keyword in wechatReply.keywords) {
         if (message.Content.search(keyword) != -1) {
-
             var reply = wechatReply.keywords[keyword].reply;
             res.reply(reply);
+        } else {
+            res.reply("得嘞！小编速速就来！");
+
+            // 获取微信用户信息
+            // @author Jack
+            // @see https://mp.weixin.qq.com/wiki/14/bb5031008f1494a59c6f71fa0f319c66.html
+            var userRequestURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + accessToken + "&openid=" + message.FromUserName;
+            // console.log("userRequestURL", userRequestURL);
+            request.get({
+                    url: userRequestURL,
+                    json: true,
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                },
+                function(err, httpResponse, body) {
+                    if (err != null) {
+                        console.log('用户数据 error:', err); // Print the error if one occurred
+                    } else {
+                        console.log('用户数据 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
+                        console.log('用户数据 body:', body);
+
+                        var nickname = body.nickname;
+                        var sex = body.sex;
+                        if (sex == 0) {
+                            sex = "未"
+                        } else if (sex == 1) {
+                            sex = "男"
+                        } else if (sex == 2) {
+                            sex = "女"
+                        }
+                        var language = body.language;
+                        var city = body.city;
+                        var province = body.province;
+                        var country = body.country;
+                        var profileImageURL = body.headimgurl;
+                        var openID = body.openid;
+
+                        // Send text information to Slack
+                        // @author Jack
+                        // @see https://www.npmjs.com/package/request
+                        // @see https://api.slack.com/incoming-webhooks#sending_messages
+                        var slackWebhookMarketing = "https://hooks.slack.com/services/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";
+                        request.post({
+                                url: slackWebhookMarketing,
+                                json: true,
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: {
+                                    "text": "新消息：",
+                                    "attachments": [{
+                                        "title": nickname + province,
+                                        "title_link": "https://mp.weixin.qq.com/",
+                                        "text": "新关键词: " + message.Content,
+                                        "fallback": "Shame... buttons aren't supported in this land",
+                                        "callback_id": "button_tutorial",
+                                        "color": "#3AA3E3",
+                                        "attachment_type": "default",
+                                        "actions": [{
+                                            "name": "reply",
+                                            "text": "reply",
+                                            "type": "button",
+                                            "value": openID,
+                                            "style": "danger"
+                                        }]
+                                    }]
+                                }
+                            },
+                            function(err, httpResponse, body) { /* ... */
+                                if (err != null) {
+                                    console.log('Slack error:', err); // Print the error if one occurred
+
+                                } else {
+                                    console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
+
+
+                                }
+                            });
+
+                    }
+                });
         }
-        //else 会出错
     }
 
     /**
@@ -230,7 +311,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
      */
     function sendMessageToSlack() {
         getAccessToken({
-            success: function (accessToken) {
+            success: function(accessToken) {
 
                 // 获取微信用户信息
                 // @author Jack
@@ -244,7 +325,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
                             "Content-Type": "application/json"
                         }
                     },
-                    function (err, httpResponse, body) {
+                    function(err, httpResponse, body) {
                         if (err != null) {
                             console.log('用户数据 error:', err); // Print the error if one occurred
                         } else {
@@ -280,29 +361,25 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
                                     },
                                     body: {
                                         "text": "新消息：",
-                                        "attachments": [
-                                            {
-                                                "title": nickname + province,
-                                                "title_link": "https://mp.weixin.qq.com/",
-                                                "text": message.Content,
-                                                "fallback": "Shame... buttons aren't supported in this land",
-                                                "callback_id": "button_tutorial",
-                                                "color": "#3AA3E3",
-                                                "attachment_type": "default",
-                                                "actions": [
-                                                    {
-                                                        "name": "reply",
-                                                        "text": "reply",
-                                                        "type": "button",
-                                                        "value": openID,
-                                                        "style": "danger"
-                                                    }
-                                                ]
-                                            }
-                                        ]
+                                        "attachments": [{
+                                            "title": nickname + province,
+                                            "title_link": "https://mp.weixin.qq.com/",
+                                            "text": message.Content,
+                                            "fallback": "Shame... buttons aren't supported in this land",
+                                            "callback_id": "button_tutorial",
+                                            "color": "#3AA3E3",
+                                            "attachment_type": "default",
+                                            "actions": [{
+                                                "name": "reply",
+                                                "text": "reply",
+                                                "type": "button",
+                                                "value": openID,
+                                                "style": "danger"
+                                            }]
+                                        }]
                                     }
                                 },
-                                function (err, httpResponse, body) { /* ... */
+                                function(err, httpResponse, body) { /* ... */
                                     if (err != null) {
                                         console.log('Slack error:', err); // Print the error if one occurred
 
@@ -317,7 +394,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
                     });
 
             },
-            error: function (error) {
+            error: function(error) {
 
                 console.log("信息转发 EEEEEor ", error);
 
@@ -397,7 +474,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
     // }
 
 
-}).image(function (message, req, res, next) {
+}).image(function(message, req, res, next) {
     // message为图片内容
     // { ToUserName: 'gh_d3e07d51b513',
     // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -407,7 +484,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
     // MediaId: 'media_id',
     // MsgId: '5837397301622104395' }}).voice(function(message, req, res, next) {
     // TODO
-}).voice(function (message, req, res, next) {
+}).voice(function(message, req, res, next) {
     // message为音频内容
     // { ToUserName: 'gh_d3e07d51b513',
     // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -416,7 +493,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
     // MediaId: 'OMYnpghh8fRfzHL8obuboDN9rmLig4s0xdpoNT6a5BoFZWufbE6srbCKc_bxduzS',
     // Format: 'amr',
     // MsgId: '5837397520665436492' }
-}).video(function (message, req, res, next) {
+}).video(function(message, req, res, next) {
     // message为视频内容
     // { ToUserName: 'gh_d3e07d51b513',
     // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -426,7 +503,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
     // ThumbMediaId: 'media_id',
     // MsgId: '5837397520665436492' }
     // TODO
-}).shortvideo(function (message, req, res, next) {
+}).shortvideo(function(message, req, res, next) {
     // message为短视频内容
     // { ToUserName: 'gh_d3e07d51b513',
     // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -436,7 +513,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
     // ThumbMediaId: 'media_id',
     // MsgId: '5837397520665436492' }
     // TODO
-}).location(function (message, req, res, next) {
+}).location(function(message, req, res, next) {
     // message为链接内容
     // { ToUserName: 'gh_d3e07d51b513',
     // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -447,7 +524,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
     // Url: 'http://1024.com/',
     // MsgId: '5837397520665436492' }
     // TODO
-}).link(function (message, req, res, next) {
+}).link(function(message, req, res, next) {
     // message为链接内容
     // { ToUserName: 'gh_d3e07d51b513',
     // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -458,7 +535,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
     // Url: 'http://1024.com/',
     // MsgId: '5837397520665436492' }
     // TODO
-}).event(function (message, req, res, next) {
+}).event(function(message, req, res, next) {
     // message为事件内容
     // { ToUserName: 'gh_d3e07d51b513',
     // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -507,7 +584,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
         console.log("收到新关注", message.FromUserName);
 
         getAccessToken({
-            success: function (accessToken) {
+            success: function(accessToken) {
                 // 获取用户信息
                 var userRequestURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + accessToken + "&openid=" + message.FromUserName;
                 request.get({
@@ -517,7 +594,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
                             "Content-Type": "application/json"
                         }
                     },
-                    function (err, httpResponse, body) {
+                    function(err, httpResponse, body) {
                         if (err != null) {
                             console.log('新关注用户数据 error:', err); // Print the error if one occurred
                         } else {
@@ -533,7 +610,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
                     })
 
             },
-            error: function (error) {
+            error: function(error) {
 
                 console.log("关注自动回复 EEEEEor ", error);
 
@@ -541,7 +618,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
         });
     }
 
-}).device_text(function (message, req, res, next) {
+}).device_text(function(message, req, res, next) {
     // message为设备文本消息内容
     // { ToUserName: 'gh_d3e07d51b513',
     // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -554,7 +631,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
     // MsgId: '5837397520665436492',
     // OpenID: 'oPKu7jgOibOA-De4u8J2RuNKpZRw' }
     // TODO
-}).device_event(function (message, req, res, next) {
+}).device_event(function(message, req, res, next) {
     // message为设备事件内容
     // { ToUserName: 'gh_d3e07d51b513',
     // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
