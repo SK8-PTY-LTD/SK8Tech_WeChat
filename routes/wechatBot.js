@@ -521,6 +521,56 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                             console.log('新关注用户数据 body:', body);
                             //用户名获取
                             var nickname = body.nickname;
+                            var language = body.language;
+                            var city = body.city;
+                            var province = body.province;
+                            var country = body.country;
+                            var profileImageURL = body.headimgurl;
+                            var openID = body.openid;
+
+                            // Send text information to Slack
+                            // @author Jack
+                            // @see https://www.npmjs.com/package/request
+                            // @see https://api.slack.com/incoming-webhooks#sending_messages
+                            var slackWebhookMarketing = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
+                            request.post({
+                                    url: slackWebhookMarketing,
+                                    json: true,
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: {
+                                        "text": "新关注：",
+                                        "attachments": [{
+                                            "title": nickname + province,
+                                            "title_link": "https://mp.weixin.qq.com/",
+                                            "text": message.Content,
+                                            "thumbnail_url": "profileImageURL",
+                                            "fallback": "Shame... buttons aren't supported in this land",
+                                            "callback_id": "button_tutorial",
+                                            "color": "#171c61",
+                                            "attachment_type": "default",
+                                            "actions": [{
+                                                "name": "reply",
+                                                "text": "reply",
+                                                "type": "button",
+                                                "value": openID,
+                                                "style": "danger"
+                                            }]
+                                        }]
+                                    }
+                                },
+                                function(err, httpResponse, body) { /* ... */
+                                    if (err != null) {
+                                        console.log('Slack error:', err); // Print the error if one occurred
+
+                                    } else {
+                                        console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
+                                    }
+                                });
+
+                            }
+                        });
                             res.reply({
                                 type: "text",
                                 content: '亲爱的' + nickname + '~，你怎么这么晚才来？你知道自己错过了多少互联网大事吗！！！\n\n想要看看SK8科技能够为你做些什么。。。\n赶快回复“作品”，或点这里试试\n\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓\n↓↓↓\n↓↓↓\n↓↓\n↓↓\n↓↓\n↓'
