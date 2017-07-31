@@ -210,7 +210,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
     // MsgType: 'text',
     // Content: 'http',
     // MsgId: '5837397576500011341' }
-    console.log("收到文字消息 ", message.Content);
+    // console.log("收到文字消息 ", message.Content);
 
     //关键词自动回复
     // var keyword;
@@ -223,7 +223,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
     //         return;
     //     }
     // }
-    
+
     // res.reply("得嘞！小编速速就来！");
 
 
@@ -569,15 +569,12 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                                     }
                                 });
 
-                            }
-                        });
-                            res.reply({
-                                type: "text",
-                                content: '亲爱的' + nickname + '~，你怎么这么晚才来？你知道自己错过了多少互联网大事吗！！！\n\n想要看看SK8科技能够为你做些什么。。。\n赶快回复“作品”，或点这里试试\n\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓\n↓↓↓\n↓↓↓\n↓↓\n↓↓\n↓↓\n↓'
-                            });
                         }
-                    })
-
+                    });
+                res.reply({
+                    type: "text",
+                    content: '亲爱的' + nickname + '~，你怎么这么晚才来？你知道自己错过了多少互联网大事吗！！！\n\n想要看看SK8科技能够为你做些什么。。。\n赶快回复“作品”，或点这里试试\n\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓\n↓↓↓\n↓↓↓\n↓↓\n↓↓\n↓↓\n↓'
+                });
             },
             error: function(error) {
 
