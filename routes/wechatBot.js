@@ -224,7 +224,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
     //     }
     // }
 
-    res.done();
+    res.reply();
 
 
     /**
