@@ -213,18 +213,18 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
     console.log("收到文字消息 ", message.Content);
 
     //关键词自动回复
-    var keyword;
+    // var keyword;
 
-    for (keyword in wechatReply.keywords) {
-        if (message.Content.search(keyword) != -1) {
-            var reply = wechatReply.keywords[keyword].reply;
-            res.reply(reply);
+    // for (keyword in wechatReply.keywords) {
+    //     if (message.Content.search(keyword) != -1) {
+    //         var reply = wechatReply.keywords[keyword].reply;
+    //         res.reply(reply);
 
-            return;
-        }
-    }
+    //         return;
+    //     }
+    // }
     
-    res.reply("得嘞！小编速速就来！");
+    // res.reply("得嘞！小编速速就来！");
 
 
     /**
