@@ -440,7 +440,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                           "attachments": [{
                             "title": nickname + " - " + province + " - " + sex,
                             "title_link": "https://mp.weixin.qq.com/",
-                            "text": secondaryButton.reply,
+                            "text": message.EventKey + " - " + profileImageURL,
                             "thumbnail_url": profileImageURL,
                             "fallback": "Shame... buttons aren't supported in this land",
                             "callback_id": "button_tutorial",
