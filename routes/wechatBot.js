@@ -221,7 +221,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                       "text": "Reply",
                       "type": "button",
                       "value": openID,
-                              "url": "https://mp.weixin.qq.com",
+                      "url": "https://mp.weixin.qq.com",
                       "style": "danger"
                     }]
                   }]
@@ -607,7 +607,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                         "text": "Reply",
                         "type": "button",
                         "value": openID,
-                              "url": "https://mp.weixin.qq.com",
+                        "url": "https://mp.weixin.qq.com",
                         "style": "danger"
                       }]
                     }]
