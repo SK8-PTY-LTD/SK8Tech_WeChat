@@ -42,33 +42,31 @@ function updateMenu() {
 
   //1. Get Access token
   getAccessToken({
-    success: function (accessToken) {
+    success: function(accessToken) {
 
       //2. 创建表单并发送
       var menuRequestURL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + accessToken;
       request.post({
-        url: menuRequestURL,
-        json: true,
-        headers: {
-          "content-type": "application/json"
+          url: menuRequestURL,
+          json: true,
+          headers: {
+            "content-type": "application/json"
+          },
+          body: {
+            "button": wechatMenu.buttons
+          }
         },
-        body: {
-          "button": wechatMenu.buttons
-        }
-      },
-        function (err, httpResponse, body) {
+        function(err, httpResponse, body) {
           if (err != null) {
-            console.log("菜单 Error ", err);
+            console.log("菜单更新 Error ", err);
           } else {
-            console.log("菜单 Success ");
+            console.log("菜单更新 Success ");
           }
         })
 
     },
-    error: function (error) {
-
-      console.log("菜单更新 EEEEEor ", error);
-
+    error: function(error) {
+      console.log("获取accessToken Error ", error);
     }
   });
 }
@@ -86,124 +84,27 @@ function getAccessToken(callback) {
 
   // Get Access token
   var requestURL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + process.env.appid + "&secret=" + process.env.appsecret;
-  console.log("requestURL", requestURL);
+  // console.log("requestURL", requestURL);
   request.get({
-    url: requestURL,
-    json: true,
-    headers: {
-      "Content-Type": "application/json"
-    }
-  },
-    function (err, httpResponse, body) {
+      url: requestURL,
+      json: true,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    },
+    function(err, httpResponse, body) {
       if (err != null) {
         console.log('公众号授权 error:', err); // Print the error if one occurred
         callback.error(err);
       } else {
-        console.log('公众号授权 success, token: ', body.access_token);
+        // console.log('公众号授权 success, token: ', body.access_token);
         callback.success(body.access_token);
       }
     });
 }
-//获取slack发出的消息
-//可成功获取但存在和用户发消息之间的先后问题, 以及路由问题
-// (目前此位置可以实现实时接收到消息,但warning信息为: 回调次数太多。)
-function getMessageFromSlack() {
-  // 1. 由slack发送信息至URL
-  var incomingHook = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
-  var options = "http://sk8tech.leanapp.cn/wechat";
-  var slack = new Slack(incomingHook, options);
-  router.post('/slack/slash-commands/send-me-message', function (req, res) {
-
-    var reply = slack.respond(req.body, function (hook) {
-
-      return {
-        text: 'Reply success , ' + hook.user_name,
-        username: 'Bot'
-      };
-
-    });
-
-    // res.json(reply);
-    console.log("slack message", req.body.text);
-    //
-    // return req.body.text;
-  });
-}
-getMessageFromSlack();
-
-//获取interactive button的信息
-function sendMessageToSlackResponseURL(responseURL, JSONmessage) {
-  var postOptions = {
-    uri: responseURL,
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json'
-    },
-    json: JSONmessage
-  }
-  request(postOptions, function (error, response, body) {
-    if (error) {
-      // handle errors as you see fit
-      console.log('send message error', error);
-    } else console.log('send message success', body);
-  });
-}
-
-router.post('/slack/actions', urlencodedParser, function (req, res) {
-  res.status(200).end() // best practice to respond with 200 status
-  var actionJSONPayload = JSON.parse(req.body.payload) // parse URL-encoded payload JSON string
-  var message = {
-    "text": actionJSONPayload.user.name + " replied user(ID): " + actionJSONPayload.actions[0].value,
-    "replace_original": false
-  }
-  sendMessageToSlackResponseURL(actionJSONPayload.response_url, message)
-  //get openid
-  //需要 异步收取reply信息
-  console.log('button message: to user(ID): ', actionJSONPayload.actions[0].value)
-
-  //     getAccessToken({
-  //         success: function(accessToken) {
-  //
-  //             var messageRequestURL = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken;
-  //             request.post({
-  //                     url: messageRequestURL,
-  //                     json: true,
-  //                     headers: {
-  //                         "content-type": "application/json"
-  //                     },
-  //                     body: {
-  //                         "touser": actionJSONPayload.actions[0].value,
-  //                         "msgtype":"text",
-  //                         "text":
-  //                         {
-  //                             "content": req.body.text
-  //                         }
-  //                     }
-  //                 },
-  //                 function (err, httpResponse, body) {
-  //                     if (err != null) {
-  //                         console.log("发送至wechat EEEEEor ", err);
-  //                     } else {
-  //                         console.log("发送至wechat Success ");
-  //                     }
-  //                 })
-  //
-  //         },
-  //         error:function(error) {
-  //
-  //             console.log("发送至wechat 失败 ", error);
-  //
-  //         }
-  //     });
-  //
-  // });
-  //
-  // }
-})
-
 
 //收到文字消息
-router.use('/', wechat(config).text(function (message, req, res, next) {
+router.use('/', wechat(config).text(function(message, req, res, next) {
   // message为文本内容
   // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
   // CreateTime: '1359125035',
@@ -224,17 +125,17 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
   //     }
   // }
 
-  res.reply();
+  // res.reply();
 
 
-	/**
-	 * 转发消息至slack
-	 *
-	 * @author Jack
-	 */
+  /**
+   * 转发消息至slack
+   *
+   * @author Jack
+   */
   // function sendMessageToSlack() {
   getAccessToken({
-    success: function (accessToken) {
+    success: function(accessToken) {
 
       // 获取微信用户信息
       // @author Jack
@@ -242,17 +143,17 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
       var userRequestURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + accessToken + "&openid=" + message.FromUserName;
       // console.log("userRequestURL", userRequestURL);
       request.get({
-        url: userRequestURL,
-        json: true,
-        headers: {
-          "Content-Type": "application/json"
-        }
-      },
-        function (err, httpResponse, body) {
+          url: userRequestURL,
+          json: true,
+          headers: {
+            "Content-Type": "application/json"
+          }
+        },
+        function(err, httpResponse, body) {
           if (err != null) {
             console.log('用户数据 error:', err); // Print the error if one occurred
           } else {
-            console.log('用户数据 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
+            // console.log('用户数据 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
             //console.log('用户数据 body:', body);
 
             var nickname = body.nickname;
@@ -277,33 +178,33 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
             // @see https://api.slack.com/incoming-webhooks#sending_messages
             var slackWebhookMarketing = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
             request.post({
-              url: slackWebhookMarketing,
-              json: true,
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: {
-                "text": "新消息：",
-                "attachments": [{
-                  "title": nickname + " - " + province,
-                  "title_link": "https://mp.weixin.qq.com/",
-                  "text": message.Content,
-                  "thumbnail_url": "profileImageURL",
-                  "fallback": "Shame... buttons aren't supported in this land",
-                  "callback_id": "button_tutorial",
-                  "color": "#171c61",
-                  "attachment_type": "default",
-                  "actions": [{
-                    "name": "reply",
-                    "text": "reply",
-                    "type": "button",
-                    "value": openID,
-                    "style": "danger"
+                url: slackWebhookMarketing,
+                json: true,
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: {
+                  "text": "新消息：",
+                  "attachments": [{
+                    "title": nickname + " - " + province + " - " + sex,
+                    "title_link": "https://mp.weixin.qq.com/",
+                    "text": message.Content,
+                    "thumbnail_url": profileImageURL,
+                    "fallback": "Shame... buttons aren't supported in this land",
+                    "callback_id": "button_tutorial",
+                    "color": "#171c61",
+                    "attachment_type": "default",
+                    "actions": [{
+                      "name": "reply",
+                      "text": "reply",
+                      "type": "button",
+                      "value": openID,
+                      "style": "danger"
+                    }]
                   }]
-                }]
-              }
-            },
-              function (err, httpResponse, body) {
+                }
+              },
+              function(err, httpResponse, body) {
                 if (err != null) {
                   console.log('Slack error:', err); // Print the error if one occurred
 
@@ -316,22 +217,22 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
         });
 
     },
-    error: function (error) {
+    error: function(error) {
       console.log("信息转发 EEEEEor ", error);
     }
   });
   // }
   // sendMessageToSlack();
 
-	/**
-	 * 由slack发送信息至Wechat
-	 * @author Yitta
-	 *
-	 * @see https://github.com/xoxco/node-slack
-	 * @see 设置:https://github.com/xoxco/node-slack/blob/master/slack.js
-	 *
-	 * @see https://mp.weixin.qq.com/wiki/11/c88c270ae8935291626538f9c64bd123.html#.E5.AE.A2.E6.9C.8D.E6.8E.A5.E5.8F.A3-.E5.8F.91.E6.B6.88.E6.81.AF
-	 */
+  /**
+   * 由slack发送信息至Wechat
+   * @author Yitta
+   *
+   * @see https://github.com/xoxco/node-slack
+   * @see 设置:https://github.com/xoxco/node-slack/blob/master/slack.js
+   *
+   * @see https://mp.weixin.qq.com/wiki/11/c88c270ae8935291626538f9c64bd123.html#.E5.AE.A2.E6.9C.8D.E6.8E.A5.E5.8F.A3-.E5.8F.91.E6.B6.88.E6.81.AF
+   */
   //get message from slack
   // function getMessageFromSlack() {
   //// 1. 由slack发送信息至URL
@@ -391,9 +292,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
   // });
   //
   // }
-
-
-}).image(function (message, req, res, next) {
+}).image(function(message, req, res, next) {
   // message为图片内容
   // { ToUserName: 'gh_d3e07d51b513',
   // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -403,7 +302,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
   // MediaId: 'media_id',
   // MsgId: '5837397301622104395' }}).voice(function(message, req, res, next) {
   // TODO
-}).voice(function (message, req, res, next) {
+}).voice(function(message, req, res, next) {
   // message为音频内容
   // { ToUserName: 'gh_d3e07d51b513',
   // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -412,7 +311,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
   // MediaId: 'OMYnpghh8fRfzHL8obuboDN9rmLig4s0xdpoNT6a5BoFZWufbE6srbCKc_bxduzS',
   // Format: 'amr',
   // MsgId: '5837397520665436492' }
-}).video(function (message, req, res, next) {
+}).video(function(message, req, res, next) {
   // message为视频内容
   // { ToUserName: 'gh_d3e07d51b513',
   // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -422,7 +321,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
   // ThumbMediaId: 'media_id',
   // MsgId: '5837397520665436492' }
   // TODO
-}).shortvideo(function (message, req, res, next) {
+}).shortvideo(function(message, req, res, next) {
   // message为短视频内容
   // { ToUserName: 'gh_d3e07d51b513',
   // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -432,7 +331,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
   // ThumbMediaId: 'media_id',
   // MsgId: '5837397520665436492' }
   // TODO
-}).location(function (message, req, res, next) {
+}).location(function(message, req, res, next) {
   // message为链接内容
   // { ToUserName: 'gh_d3e07d51b513',
   // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -443,7 +342,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
   // Url: 'http://1024.com/',
   // MsgId: '5837397520665436492' }
   // TODO
-}).link(function (message, req, res, next) {
+}).link(function(message, req, res, next) {
   // message为链接内容
   // { ToUserName: 'gh_d3e07d51b513',
   // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -454,7 +353,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
   // Url: 'http://1024.com/',
   // MsgId: '5837397520665436492' }
   // TODO
-}).event(function (message, req, res, next) {
+}).event(function(message, req, res, next) {
   // message为事件内容
   // { ToUserName: 'gh_d3e07d51b513',
   // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -490,7 +389,6 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
 
         if (eventKey == secondaryButton.key) {
           res.reply(secondaryButton.reply);
-
         }
       }
     }
@@ -500,25 +398,25 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
   //@author Yitta
   //@see https://mp.weixin.qq.com/wiki/7/9f89d962eba4c5924ed95b513ba69d9b.html
   if (message.Event == 'subscribe') {
-    console.log("收到新关注", message.FromUserName);
+    console.log("收到新关注 ", message.FromUserName);
 
     getAccessToken({
-      success: function (accessToken) {
+      success: function(accessToken) {
         // 获取用户信息
         var userRequestURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + accessToken + "&openid=" + message.FromUserName;
         request.get({
-          url: userRequestURL,
-          json: true,
-          headers: {
-            "Content-Type": "application/json"
-          }
-        },
-          function (err, httpResponse, body) {
+            url: userRequestURL,
+            json: true,
+            headers: {
+              "Content-Type": "application/json"
+            }
+          },
+          function(err, httpResponse, body) {
             if (err != null) {
               console.log('新关注用户数据 error:', err); // Print the error if one occurred
             } else {
-              console.log('新关注用户数据 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
-              console.log('新关注用户数据 body:', body);
+              // console.log('新关注用户数据 statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
+              // console.log('新关注用户数据 body:', body);
               //用户名获取
               var nickname = body.nickname;
               var language = body.language;
@@ -534,59 +432,55 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
               // @see https://api.slack.com/incoming-webhooks#sending_messages
               var slackWebhookMarketing = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
               request.post({
-                url: slackWebhookMarketing,
-                json: true,
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: {
-                  "text": "新关注：",
-                  "attachments": [{
-                    "title": nickname + " - " + province,
-                    "title_link": "https://mp.weixin.qq.com/",
-                    "text": message.Content,
-                    "thumbnail_url": "profileImageURL",
-                    "fallback": "Shame... buttons aren't supported in this land",
-                    "callback_id": "button_tutorial",
-                    "color": "#171c61",
-                    "attachment_type": "default",
-                    "actions": [{
-                      "name": "reply",
-                      "text": "reply",
-                      "type": "button",
-                      "value": openID,
-                      "style": "danger"
+                  url: slackWebhookMarketing,
+                  json: true,
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  body: {
+                    "text": "新关注：",
+                    "attachments": [{
+                      "title": nickname + " - " + province,
+                      "title_link": "https://mp.weixin.qq.com/",
+                      "text": message.Content,
+                      "thumbnail_url": "profileImageURL",
+                      "fallback": "Shame... buttons aren't supported in this land",
+                      "callback_id": "button_tutorial",
+                      "color": "#171c61",
+                      "attachment_type": "default",
+                      "actions": [{
+                        "name": "reply",
+                        "text": "reply",
+                        "type": "button",
+                        "value": openID,
+                        "style": "danger"
+                      }]
                     }]
-                  }]
-                }
-              },
-                function (err, httpResponse, body) { /* ... */
+                  }
+                },
+                function(err, httpResponse, body) { /* ... */
                   if (err != null) {
                     console.log('Slack error:', err); // Print the error if one occurred
-
                   } else {
-                    console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
-
-                    //自动回复
-                    res.reply({
-                      type: "text",
-                      content: '亲爱的' + nickname + '~，你怎么这么晚才来？你知道自己错过了多少互联网大事吗！！！\n\n想要看看SK8科技能够为你做些什么。。。\n赶快回复“作品”，或点这里试试\n\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓\n↓↓↓\n↓↓↓\n↓↓\n↓↓\n↓↓\n↓'
-                    });
+                    // console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
                   }
                 });
+
+              // 自动回复
+              res.reply({
+                type: "text",
+                content: '亲爱的' + nickname + '~，你怎么这么晚才来？你知道自己错过了多少互联网大事吗！！！\n\n想要看看SK8科技能够为你做些什么。。。\n赶快回复“作品”，或点这里试试\n\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓↓\n↓↓↓\n↓↓↓\n↓↓↓\n↓↓\n↓↓\n↓↓\n↓'
+              });
 
             }
           });
       },
-      error: function (error) {
-
-        console.log("关注自动回复 EEEEEor ", error);
-
+      error: function(error) {
+        console.log("关注自动回复 Error ", error);
       }
     });
   }
-
-}).device_text(function (message, req, res, next) {
+}).device_text(function(message, req, res, next) {
   // message为设备文本消息内容
   // { ToUserName: 'gh_d3e07d51b513',
   // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -599,7 +493,7 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
   // MsgId: '5837397520665436492',
   // OpenID: 'oPKu7jgOibOA-De4u8J2RuNKpZRw' }
   // TODO
-}).device_event(function (message, req, res, next) {
+}).device_event(function(message, req, res, next) {
   // message为设备事件内容
   // { ToUserName: 'gh_d3e07d51b513',
   // FromUserName: 'oPKu7jgOibOA-De4u8J2RuNKpZRw',
@@ -615,5 +509,104 @@ router.use('/', wechat(config).text(function (message, req, res, next) {
   // OpenID: 'oPKu7jgOibOA-De4u8J2RuNKpZRw' }
   // TODO
 }).middlewarify());
+
+
+//获取slack发出的消息
+//可成功获取但存在和用户发消息之间的先后问题, 以及路由问题
+// (目前此位置可以实现实时接收到消息,但warning信息为: 回调次数太多。)
+function getMessageFromSlack() {
+  // 1. 由slack发送信息至URL
+  var incomingHook = "https://hooks.slack.com/services/" + process.env.incomingWebHook;
+  var options = "http://sk8tech.leanapp.cn/wechat";
+  var slack = new Slack(incomingHook, options);
+  router.post('/slack/slash-commands/send-me-message', function(req, res) {
+
+    var reply = slack.respond(req.body, function(hook) {
+
+      return {
+        text: 'Reply success , ' + hook.user_name,
+        username: 'Bot'
+      };
+
+    });
+
+    // res.json(reply);
+    console.log("slack message", req.body.text);
+    //
+    // return req.body.text;
+  });
+}
+getMessageFromSlack();
+
+//获取interactive button的信息
+function sendMessageToSlackResponseURL(responseURL, JSONmessage) {
+  var postOptions = {
+    uri: responseURL,
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    json: JSONmessage
+  }
+  request(postOptions, function(error, response, body) {
+    if (error) {
+      // handle errors as you see fit
+      console.log('send message error', error);
+    } else console.log('send message success', body);
+  });
+}
+
+router.post('/slack/actions', urlencodedParser, function(req, res) {
+  res.status(200).end() // best practice to respond with 200 status
+  var actionJSONPayload = JSON.parse(req.body.payload) // parse URL-encoded payload JSON string
+  var message = {
+    "text": actionJSONPayload.user.name + " replied user(ID): " + actionJSONPayload.actions[0].value,
+    "replace_original": false
+  }
+  sendMessageToSlackResponseURL(actionJSONPayload.response_url, message)
+  //get openid
+  //需要 异步收取reply信息
+  console.log('button message: to user(ID): ', actionJSONPayload.actions[0].value)
+
+  //     getAccessToken({
+  //         success: function(accessToken) {
+  //
+  //             var messageRequestURL = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken;
+  //             request.post({
+  //                     url: messageRequestURL,
+  //                     json: true,
+  //                     headers: {
+  //                         "content-type": "application/json"
+  //                     },
+  //                     body: {
+  //                         "touser": actionJSONPayload.actions[0].value,
+  //                         "msgtype":"text",
+  //                         "text":
+  //                         {
+  //                             "content": req.body.text
+  //                         }
+  //                     }
+  //                 },
+  //                 function (err, httpResponse, body) {
+  //                     if (err != null) {
+  //                         console.log("发送至wechat EEEEEor ", err);
+  //                     } else {
+  //                         console.log("发送至wechat Success ");
+  //                     }
+  //                 })
+  //
+  //         },
+  //         error:function(error) {
+  //
+  //             console.log("发送至wechat 失败 ", error);
+  //
+  //         }
+  //     });
+  //
+  // });
+  //
+  // }
+})
+
 
 module.exports = router;
