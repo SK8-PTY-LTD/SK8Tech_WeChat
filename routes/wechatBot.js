@@ -185,14 +185,37 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                 body: {
                   "text": "新消息：",
                   "attachments": [{
-                    "title": nickname + " - " + province + " - " + sex,
+                    "title": "发消息: ",
                     "title_link": "https://mp.weixin.qq.com/",
+                    "author_name": nickname,
                     "text": message.Content,
-                    "thumbnail_url": profileImageURL,
+                    "thumb_url": profileImageURL,
                     "fallback": "Shame... buttons aren't supported in this land",
                     "callback_id": "button_tutorial",
                     "color": "#171c61",
                     "attachment_type": "default",
+                    "fields": [{
+                      "title": "Gender",
+                      "value": sex,
+                      "short": true
+                    }, {
+                      "title": "Language",
+                      "value": language,
+                      "short": true
+                    }, {
+                      "title": "City",
+                      "value": city,
+                      "short": true
+                    }, {
+                      "title": "Province",
+                      "value": province,
+                      "short": true
+                    }, {
+                      "title": "Country",
+                      "value": country,
+                      "short": true
+                    }],
+                    "footer": "Reply via https://mp.weixin.qq.com",
                     "actions": [{
                       "name": "reply",
                       "text": "reply",
@@ -438,14 +461,37 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                         body: {
                           "text": "菜单事件：",
                           "attachments": [{
-                            "title": nickname + " - " + province + " - " + sex,
+                            "title": "点击了: ",
                             "title_link": "https://mp.weixin.qq.com/",
-                            "text": message.EventKey + " - " + profileImageURL,
-                            "thumbnail_url": profileImageURL,
+                            "author_name": nickname,
+                            "text": message.EventKey,
+                            "thumb_url": profileImageURL,
                             "fallback": "Shame... buttons aren't supported in this land",
                             "callback_id": "button_tutorial",
                             "color": "#171c61",
                             "attachment_type": "default",
+                            "fields": [{
+                              "title": "Gender",
+                              "value": sex,
+                              "short": true
+                            }, {
+                              "title": "Language",
+                              "value": language,
+                              "short": true
+                            }, {
+                              "title": "City",
+                              "value": city,
+                              "short": true
+                            }, {
+                              "title": "Province",
+                              "value": province,
+                              "short": true
+                            }, {
+                              "title": "Country",
+                              "value": country,
+                              "short": true
+                            }],
+                            "footer": "Reply via https://mp.weixin.qq.com",
                             "actions": [{
                               "name": "reply",
                               "text": "reply",
@@ -460,7 +506,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                         if (err != null) {
                           console.log('Slack error:', err); // Print the error if one occurred
                         } else {
-                          console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
+                          // console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
                         }
                       });
 
@@ -469,7 +515,7 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
 
             },
             error: function(error) {
-              console.log("信息转发 EEEEEor ", error);
+              console.log("信息转发 Error ", error);
             }
           });
         }
@@ -523,14 +569,37 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                   body: {
                     "text": "新关注：",
                     "attachments": [{
-                      "title": nickname + " - " + province,
+                      "title": "新关注：" + nickname,
                       "title_link": "https://mp.weixin.qq.com/",
+                      "author_name": nickname,
                       "text": message.Content,
-                      "thumbnail_url": "profileImageURL",
+                      "thumb_url": "profileImageURL",
                       "fallback": "Shame... buttons aren't supported in this land",
                       "callback_id": "button_tutorial",
                       "color": "#171c61",
                       "attachment_type": "default",
+                      "fields": [{
+                        "title": "Gender",
+                        "value": sex,
+                        "short": true
+                      }, {
+                        "title": "Language",
+                        "value": language,
+                        "short": true
+                      }, {
+                        "title": "City",
+                        "value": city,
+                        "short": true
+                      }, {
+                        "title": "Province",
+                        "value": province,
+                        "short": true
+                      }, {
+                        "title": "Country",
+                        "value": country,
+                        "short": true
+                      }],
+                      "footer": "Reply via https://mp.weixin.qq.com",
                       "actions": [{
                         "name": "reply",
                         "text": "reply",
