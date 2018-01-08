@@ -210,9 +210,9 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                   console.log('Slack statusCode:', httpResponse && httpResponse.statusCode); // Print the response status code if a response was received
                 }
               });
-
           }
         });
+      res.nowait()
 
     },
     error: function(error) {
