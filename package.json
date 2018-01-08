@@ -23,7 +23,7 @@
     "express": "4.12.3",
     "leanengine": "^1.0.0-beta",
     "node-slack": "0.0.7",
-    "request": "^2.69.0",
+    "request": "2.81.0",
     "strformat": "0.0.7",
     "wechat": "^2.0.3",
     "wechat-api": "^1.24.0"
