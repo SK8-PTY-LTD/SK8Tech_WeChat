@@ -218,9 +218,10 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                     "footer": "Reply via https://mp.weixin.qq.com",
                     "actions": [{
                       "name": "reply",
-                      "text": "reply",
+                      "text": "Reply",
                       "type": "button",
                       "value": openID,
+                              "url": "https://mp.weixin.qq.com",
                       "style": "danger"
                     }]
                   }]
@@ -494,9 +495,10 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                             "footer": "Reply via https://mp.weixin.qq.com",
                             "actions": [{
                               "name": "reply",
-                              "text": "reply",
+                              "text": "Reply",
                               "type": "button",
                               "value": openID,
+                              "url": "https://mp.weixin.qq.com",
                               "style": "danger"
                             }]
                           }]
@@ -602,9 +604,10 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
                       "footer": "Reply via https://mp.weixin.qq.com",
                       "actions": [{
                         "name": "reply",
-                        "text": "reply",
+                        "text": "Reply",
                         "type": "button",
                         "value": openID,
+                              "url": "https://mp.weixin.qq.com",
                         "style": "danger"
                       }]
                     }]
