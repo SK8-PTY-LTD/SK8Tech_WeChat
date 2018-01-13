@@ -550,6 +550,14 @@ router.use('/', wechat(config).text(function(message, req, res, next) {
               // console.log('新关注用户数据 body:', body);
               //用户名获取
               var nickname = body.nickname;
+              var sex = body.sex;
+              if (sex == 0) {
+                sex = "未"
+              } else if (sex == 1) {
+                sex = "男"
+              } else if (sex == 2) {
+                sex = "女"
+              }
               var language = body.language;
               var city = body.city;
               var province = body.province;
